@@ -50,23 +50,23 @@ export default function TestForm() {
   };
 
   return (
-    <section id="test-nang-luc" className="max-w-4xl mx-auto bg-indigo-50 rounded-lg p-10 shadow-lg space-y-8">
+    <section id="test-nang-luc" className=" mx-auto bg-indigo-50 rounded-lg p-10 shadow-lg space-y-8">
       <h2 className="text-3xl font-bold text-indigo-700 text-center">
-        Test Năng Lực Miễn Phí
+        Free Skill Assessment Test
       </h2>
       <p className="text-center text-gray-700 text-lg max-w-3xl mx-auto">
-        Tham gia bài test năng lực miễn phí để nhận phản hồi chi tiết và lộ trình học cá nhân hóa phù hợp với bạn.
+        Take a free skill assessment test to receive detailed feedback and a personalized learning path tailored just for you.
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="name" className="block text-gray-700 font-semibold mb-2">
-            Họ và tên
+            Full name
           </label>
           <input
             id="name"
             name="name"
             required
-            placeholder="Nhập họ và tên của bạn"
+            placeholder="Enter your first and last name"
             className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
         </div>
@@ -79,13 +79,13 @@ export default function TestForm() {
             name="email"
             type="email"
             required
-            placeholder="Nhập email của bạn"
+            placeholder="Enter your email"
             className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
         </div>
         <div>
           <label htmlFor="level" className="block text-gray-700 font-semibold mb-2">
-            Trình độ hiện tại
+            Current level
           </label>
           <select
             id="level"
@@ -93,27 +93,27 @@ export default function TestForm() {
             required
             className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
-            <option value="">Chọn trình độ</option>
-            <option value="beginner">Sơ cấp</option>
-            <option value="intermediate">Trung cấp</option>
-            <option value="advanced">Cao cấp</option>
+            <option value="">Select level</option>
+            <option value="beginner">Elementary</option>
+            <option value="intermediate">Intermediate level</option>
+            <option value="advanced">High-class</option>
           </select>
         </div>
         <button
           type="submit"
           className="w-full bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition"
         >
-          Bắt đầu test năng lực
+          Start testing your skills
         </button>
       </form>
 
       {feedback && (
         <div className="bg-white p-6 rounded-md shadow-md space-y-4">
-          <h3 className="text-2xl font-semibold text-indigo-700">Phản hồi năng lực của bạn</h3>
+          <h3 className="text-2xl font-semibold text-indigo-700">Feedback your abilities</h3>
           <p className="text-gray-700">{feedback}</p>
           {path.length > 0 && (
             <>
-              <h4 className="text-xl font-semibold text-indigo-600">Lộ trình học đề xuất</h4>
+              <h4 className="text-xl font-semibold text-indigo-600">Recommended learning path</h4>
               <ul className="list-disc list-inside text-gray-700 space-y-1">
                 {path.map((item, i) => (
                   <li key={i}>{item}</li>
