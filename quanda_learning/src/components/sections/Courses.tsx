@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchCourses, Course } from "@/lid/CoursesAPI"; // đường dẫn tùy theo bạn dùng alias hay không
+import { fetchCourses, Course } from "@/lid/CoursesAPI"; // Đường dẫn tuỳ chỉnh
 
 function CourseCard({ course }: { course: Course }) {
   return (
@@ -13,7 +13,7 @@ function CourseCard({ course }: { course: Course }) {
       />
       <h3 className="text-xl font-semibold mb-2 text-indigo-700">{course.name}</h3>
       <p className="text-gray-700 flex-grow">{course.description}</p>
-      <p className="text-sm text-gray-500 mt-2">Level: {course.level}</p>
+      <p className="text-sm text-gray-500 mt-2">Trình độ: {course.level}</p>
       <button className="mt-4 bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition">
         Xem chi tiết
       </button>
@@ -33,9 +33,9 @@ export default function Courses() {
   }, []);
 
   return (
-    <section id="khoa-hoc" className="space-y-12">
+    <section id="courses" className="space-y-12">
       <h2 className="text-3xl font-bold text-indigo-600 text-center mb-8">
-        Most Popular Courses
+        Các khóa học phổ biến nhất
       </h2>
 
       {loading ? (
