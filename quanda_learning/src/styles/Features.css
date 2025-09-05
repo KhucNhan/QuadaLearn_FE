@@ -1,0 +1,16 @@
+#imageAI{
+    border-radius: 100%;
+}
+
+#desc{
+    font-size: 18px;
+}
+
+#descAI{
+    margin-top: 10px;
+}
+
+#backgAI{
+    width: 100%;
+    height: 250px;
+}

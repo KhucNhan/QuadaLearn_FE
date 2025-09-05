@@ -50,12 +50,12 @@ export default function TestForm() {
   };
 
   return (
-    <section id="test-nang-luc" className="max-w-4xl mx-auto bg-indigo-50 rounded-lg p-10 shadow-lg space-y-8">
+    <section id="capacityTest" className="mx-auto bg-indigo-50 rounded-lg p-10 shadow-lg space-y-8">
       <h2 className="text-3xl font-bold text-indigo-700 text-center">
-        Test Năng Lực Miễn Phí
+        Bài kiểm tra đánh giá trình độ miễn phí
       </h2>
       <p className="text-center text-gray-700 text-lg max-w-3xl mx-auto">
-        Tham gia bài test năng lực miễn phí để nhận phản hồi chi tiết và lộ trình học cá nhân hóa phù hợp với bạn.
+        Làm bài kiểm tra trình độ miễn phí để nhận phản hồi chi tiết và lộ trình học tập cá nhân hóa dành riêng cho bạn.
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -85,7 +85,7 @@ export default function TestForm() {
         </div>
         <div>
           <label htmlFor="level" className="block text-gray-700 font-semibold mb-2">
-            Trình độ hiện tại
+            Mục tiêu 
           </label>
           <select
             id="level"
@@ -93,27 +93,27 @@ export default function TestForm() {
             required
             className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
-            <option value="">Chọn trình độ</option>
-            <option value="beginner">Sơ cấp</option>
-            <option value="intermediate">Trung cấp</option>
-            <option value="advanced">Cao cấp</option>
+            <option className = "target" value="">Chọn mục tiêu</option>
+            <option className = "target" value="beginner">A1 - A2</option>
+            <option className = "target" value="intermediate">B1 - B2</option>
+            <option className = "target" value="advanced">C1 - C2</option>
           </select>
         </div>
         <button
           type="submit"
           className="w-full bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition"
         >
-          Bắt đầu test năng lực
+          Bắt đầu kiểm tra trình độ
         </button>
       </form>
 
       {feedback && (
         <div className="bg-white p-6 rounded-md shadow-md space-y-4">
-          <h3 className="text-2xl font-semibold text-indigo-700">Phản hồi năng lực của bạn</h3>
+          <h3 className="text-2xl font-semibold text-indigo-700">Phản hồi trình độ của bạn</h3>
           <p className="text-gray-700">{feedback}</p>
           {path.length > 0 && (
             <>
-              <h4 className="text-xl font-semibold text-indigo-600">Lộ trình học đề xuất</h4>
+              <h4 className="text-xl font-semibold text-indigo-600">Lộ trình học tập đề xuất</h4>
               <ul className="list-disc list-inside text-gray-700 space-y-1">
                 {path.map((item, i) => (
                   <li key={i}>{item}</li>
