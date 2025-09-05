@@ -12,6 +12,11 @@ export default function Features() {
       desc: "Nhận phản hồi chi tiết và đề xuất cải thiện sau mỗi bài kiểm tra.",
       img: "https://png.pngtree.com/background/20250422/original/pngtree-ai-robot-analyzing-financial-data-in-futuristic-setting-picture-image_16449252.jpg",
     },
+    {
+      title: "Đánh giá",
+      desc: "Phân tích kết quả và đề xuất cải thiện ngay sau làm bài khảo sát.",
+      img: "https://static-content.cihms.com/wp-content/uploads/2022/03/ai-in-hospitality.jpg",
+    }
   ];
 
   return (
