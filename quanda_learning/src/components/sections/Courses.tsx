@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchCourses, Course } from "@/lid/CoursesAPI"; // Đường dẫn tuỳ chỉnh
+import { fetchCourses, Course } from "@/lib/CoursesAPI"; // Đường dẫn tuỳ chỉnh
 
 function CourseCard({ course }: { course: Course }) {
   return (

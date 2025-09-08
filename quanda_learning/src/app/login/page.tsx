@@ -1,9 +1,10 @@
-import { LoginForm } from "@/components/Login-from"
+import AuthLayout from "@/components/login_and_register/AuthLayout";
+import LoginForm from "@/components/login_and_register/LoginForm";
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50">
+    <AuthLayout type="login">
       <LoginForm />
-    </main>
-  )
+    </AuthLayout>
+  );
 }
