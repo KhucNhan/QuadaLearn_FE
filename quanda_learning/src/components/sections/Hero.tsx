@@ -16,7 +16,7 @@ export default function Hero() {
           Học tiếng Anh không chỉ là học ngữ pháp và từ vựng – mà là mở ra cánh cửa đến với thế giới cơ hội.
         </p>
         <button
-          onClick={() => appRouter.push("/register")}
+          onClick={() => appRouter.push("/authenticate/register")}
           className="custom-btn"
         >
           Đăng ký ngay
