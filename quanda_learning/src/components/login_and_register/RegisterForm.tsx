@@ -169,7 +169,7 @@ export default function RegisterForm() {
           Đã có tài khoản?{" "}
           <button
             type="button"
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/authenticate/login")}
             className="text-blue-600 hover:underline font-semibold"
           >
             Đăng nhập ngay

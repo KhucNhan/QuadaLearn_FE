@@ -14,6 +14,7 @@ export default function AuthLayout({
   const images = {
     login: "images/login_register/anhnenlogin.png",
     register: "https://img.freepik.com/psd-premium/studente-3d-che-legge-dal-notebook-alla-scrivania-render-3d_753500-432.jpg",
+
   };
 
   const titles = {
