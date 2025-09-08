@@ -34,7 +34,7 @@ export default function Header() {
 
         {/* Nút bắt đầu */}
         <button
-          onClick={() => router.push("/login")}
+          onClick={() => router.push("/authenticate/login")}
           className="mt-4 md:mt-0 inline-block bg-yellow-400 text-indigo-900 font-bold px-6 py-3 rounded-full shadow-lg hover:bg-yellow-300 transition-colors duration-300 drop-shadow-md"
         >
           Bắt đầu học
