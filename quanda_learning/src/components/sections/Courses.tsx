@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchCourses, Course } from "@/lid/CoursesAPI"; // Đường dẫn tuỳ chỉnh
+import { fetchCourses, Course } from "@/lib/CoursesAPI"; // Đường dẫn tuỳ chỉnh
 
 function CourseCard({ course }: { course: Course }) {
   return (
@@ -11,7 +11,12 @@ function CourseCard({ course }: { course: Course }) {
         alt={course.name}
         className="rounded-md mb-4 object-cover h-48 w-full"
       />
-      <h3 className="text-xl font-semibold mb-2 text-indigo-700">{course.name}</h3>
+      <h3
+        className="text-xl font-semibold mb-2 text-indigo-700"
+        title={course.name} // hiển thị full tên khi hover
+>
+        {course.name.length > 15 ? course.name.slice(0, 15) + "..." : course.name}
+      </h3>
       <p className="text-gray-700 flex-grow">{course.description}</p>
       <p className="text-sm text-gray-500 mt-2">Trình độ: {course.level}</p>
       <button className="mt-4 bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition">
