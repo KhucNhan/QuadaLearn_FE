@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import '../styles/Header.css';
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   return (
@@ -31,12 +33,12 @@ export default function Header() {
         </nav>
 
         {/* Nút bắt đầu */}
-        <a
-          href="#"
+        <button
+          onClick={() => router.push("/authenticate/login")}
           className="mt-4 md:mt-0 inline-block bg-yellow-400 text-indigo-900 font-bold px-6 py-3 rounded-full shadow-lg hover:bg-yellow-300 transition-colors duration-300 drop-shadow-md"
         >
           Bắt đầu học
-        </a>
+        </button>
 
         {/* Nút mở menu di động */}
         <button

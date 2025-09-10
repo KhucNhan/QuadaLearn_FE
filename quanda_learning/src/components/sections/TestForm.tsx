@@ -13,11 +13,11 @@ export default function TestForm() {
   // 🧠 Kiểm tra hợp lệ của họ tên
   const validateName = (name: string): boolean => {
     const words = name.trim().split(/\s+/);
-    const hasLetters = /[a-zA-ZÀ-ỹ]/.test(name); // kiểm tra có chứa chữ cái (bao gồm cả tiếng Việt)
+    const hasLetters = /[a-zA-ZÀ-ỹ]/.test(name); // kiểm tra có chứa chữ cái (tiếng Việt cũng có)
 
     return (
       words.length >= 2 &&
-      words.every((word) => word.length >= 2) &&
+      words.every((word) => word.length >= 1) && // mỗi từ ≥ 1 ký tự
       hasLetters
     );
   };
@@ -98,7 +98,7 @@ export default function TestForm() {
           />
           {!validateName(name) && name !== "" && (
             <p className="text-red-500 text-sm mt-1">
-              Vui lòng nhập đầy đủ họ và tên (ít nhất 2 từ, mỗi từ ≥ 2 ký tự và có chứa chữ cái).
+              Vui lòng nhập đầy đủ họ và tên (ít nhất 2 từ, mỗi từ ≥ 1 ký tự và có chứa chữ cái).
             </p>
           )}
 
@@ -146,8 +146,8 @@ export default function TestForm() {
           type="submit"
           disabled={!isValid}
           className={`w-full py-3 rounded-md font-semibold transition ${isValid
-              ? "bg-indigo-600 text-white hover:bg-indigo-700"
-              : "bg-gray-400 text-white cursor-not-allowed"
+            ? "bg-indigo-600 text-white hover:bg-indigo-700"
+            : "bg-gray-400 text-white cursor-not-allowed"
             }`}
         >
           Bắt đầu kiểm tra trình độ
