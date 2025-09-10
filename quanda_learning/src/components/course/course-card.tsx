@@ -8,7 +8,7 @@ interface CourseCardProps {
   id: string
   title: string
   description: string
-  level: "Beginner" | "Intermediate" | "Advanced"
+  level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2"
   duration: string
   students: number
   rating: number
@@ -29,16 +29,22 @@ export function CourseCard({
   isRecommended = false,
 }: CourseCardProps) {
   const levelColors = {
-    Beginner: "bg-green-100 text-green-800",
-    Intermediate: "bg-yellow-100 text-yellow-800",
-    Advanced: "bg-red-100 text-red-800",
-  }
+  A1: "bg-green-100 text-green-800",
+  A2: "bg-green-200 text-green-900",
+  B1: "bg-yellow-100 text-yellow-800",
+  B2: "bg-yellow-200 text-yellow-900",
+  C1: "bg-red-100 text-red-800",
+  C2: "bg-red-200 text-red-900",
+}
 
-  const levelVietnamese = {
-    Beginner: "Cơ bản",
-    Intermediate: "Trung cấp",
-    Advanced: "Nâng cao",
-  }
+const levelVietnamese = {
+  A1: "Cơ bản (A1)",
+  A2: "Sơ cấp (A2)",
+  B1: "Trung cấp thấp (B1)",
+  B2: "Trung cấp cao (B2)",
+  C1: "Nâng cao (C1)",
+  C2: "Thành thạo (C2)",
+}
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">

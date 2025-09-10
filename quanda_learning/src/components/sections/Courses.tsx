@@ -39,10 +39,6 @@ export default function Courses() {
 
   return (
     <section id="courses" className="space-y-12">
-      <h2 className="text-3xl font-bold text-indigo-600 text-center mb-8">
-        Các khóa học phổ biến nhất
-      </h2>
-
       {loading ? (
         <p className="text-center text-gray-500">Đang tải dữ liệu...</p>
       ) : (

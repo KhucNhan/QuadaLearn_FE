@@ -1,9 +1,9 @@
 import Header from "@/components/Header";
-import { CourseCard } from "@/components/course/course-card"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { BookOpen, Target, Trophy, TrendingUp, Filter } from "lucide-react"
+import { CourseCard } from "@/components/course/course-card";
 
 export default function CoursesPage() {
   // Mock user data - trong thực tế sẽ lấy từ database/API

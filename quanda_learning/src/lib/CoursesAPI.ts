@@ -16,3 +16,11 @@ export async function fetchCourses(): Promise<Course[]> {
 
   return res.json();
 }
+
+export async function fetchCoursesByLevel(level: string): Promise<Course[]> {
+  const res = await fetch(`http://localhost:8888/courses/level?level=${level}`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch courses by level");
+  }
+  return res.json();
+}
