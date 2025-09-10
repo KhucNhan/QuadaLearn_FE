@@ -72,7 +72,7 @@ export default function RegisterForm() {
         goal: formData.goal,
       });
 
-      router.push("/login");
+      router.push("/authenticate/login");
     } catch (err: any) {
       setErrorMessage("Đăng ký thất bại: " + err.message);
     }

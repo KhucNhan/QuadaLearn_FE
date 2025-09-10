@@ -11,6 +11,9 @@ export default function HomePage() {
       <Header />
       <main className="max-w-7xl mx-auto px-6 py-12 space-y-24">
         <Hero />
+        <h2 className="text-3xl font-bold text-indigo-600 text-center mb-8">
+        Các khóa học phổ biến nhất
+      </h2>
         <Courses />
         <Features/>
         <TestForm/>
