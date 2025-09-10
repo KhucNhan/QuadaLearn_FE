@@ -34,6 +34,9 @@ export default function HomePage() {
         </section>
 
         <section id="courses">
+          <h2 className="text-3xl font-bold text-indigo-600 text-center mb-8">
+            Các khóa học phổ biến nhất
+          </h2>
           <Courses />
         </section>
 
