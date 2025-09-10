@@ -2,12 +2,14 @@ type TestSidebarProps = {
   totalQuestions: number;
   onNavigate: (index: number) => void;
   answers: Record<number, string>;
+  onSubmit: () => void;
 };
 
 export default function TestSidebar({
   totalQuestions,
   onNavigate,
   answers,
+  onSubmit,
 }: TestSidebarProps) {
   return (
     <aside className="w-72 h-screen sticky top-0 bg-white border-l border-gray-200 p-6 flex flex-col">
@@ -22,7 +24,7 @@ export default function TestSidebar({
         <p className="text-lg font-semibold mb-3">Questions</p>
         <div className="grid grid-cols-5 gap-2">
           {Array.from({ length: totalQuestions }, (_, i) => {
-            const isAnswered = Object.keys(answers).length > 0 && answers[i + 1];
+            const isAnswered = answers[i + 1]; // check đã chọn chưa
             return (
               <button
                 key={i}
@@ -41,7 +43,10 @@ export default function TestSidebar({
       </div>
 
       {/* Submit button */}
-      <button className="mt-auto w-full py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700">
+      <button
+        onClick={onSubmit}
+        className="mt-auto w-full py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700"
+      >
         Submit Test
       </button>
     </aside>
