@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import "../../styles/login_and_register/RegisterForm.css";
-import { registerUser } from "@/lib/RegisterAPI";
+import { registerUser } from "@/lib/authenticate/RegisterAPI";
 
 export default function RegisterForm() {
   const router = useRouter();

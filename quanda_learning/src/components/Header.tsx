@@ -9,6 +9,12 @@ export default function Header() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
+
+  const handleNavClick = (sectionId: string) => {
+  router.push(`/#${sectionId}`);};
+
+
+
   return (
     <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between">
@@ -26,10 +32,29 @@ export default function Header() {
 
         {/* Thanh điều hướng trên máy tính */}
         <nav className="hidden md:flex space-x-8 mt-4 md:mt-0 text-white font-semibold text-lg drop-shadow-md">
-          <a href="#" className="hover:text-yellow-300 transition-colors duration-300">Trang chủ</a>
-          <a href="#courses" className="hover:text-yellow-300 transition-colors duration-300">Khóa học phổ biến</a>
-          <a href="#featureAI" className="hover:text-yellow-300 transition-colors duration-300">Tính năng AI</a>
-          <a href="#capacityTest" className="hover:text-yellow-300 transition-colors duration-300">Kiểm tra trình độ</a>
+          <button
+            onClick={() => router.push('/')}
+            className="hover:text-yellow-300 transition-colors duration-300">
+            Trang chủ
+          </button>
+          <button
+            onClick={() => handleNavClick("courses")}
+            className="hover:text-yellow-300 transition-colors duration-300"
+          >
+            Khóa học phổ biến
+          </button>
+          <button
+            onClick={() => handleNavClick("featureAI")}
+            className="hover:text-yellow-300 transition-colors duration-300"
+          >
+            Tính năng AI
+          </button>
+          <button
+            onClick={() => handleNavClick("capacityTest")}
+            className="hover:text-yellow-300 transition-colors duration-300"
+          >
+            Kiểm tra trình độ
+          </button>
         </nav>
 
         {/* Nút bắt đầu */}
