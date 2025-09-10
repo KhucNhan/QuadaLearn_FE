@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Courses from "@/components/sections/Courses";
 import CoursesByLevel from "@/components/course/CoursesByLevel";
 import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 
 export default function Home() {
   const router = useRouter();
