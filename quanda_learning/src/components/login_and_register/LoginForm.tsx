@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { login } from "@/lib/LoginAPI";
+import { login } from "@/lib/authenticate/LoginAPI";
 import "../../styles/login_and_register/LoginForm.css";
 
 export default function LoginForm() {

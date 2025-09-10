@@ -1,9 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchCourses, Course } from "@/lib/CoursesAPI"; // Đường dẫn tuỳ chỉnh
+import { fetchCourses, Course } from "@/lib/courses/CoursesAPI"; // Đường dẫn tuỳ chỉnh
+import { useRouter } from "next/navigation";
 
 function CourseCard({ course }: { course: Course }) {
+
+  const router = useRouter();
+
+
+  const handleViewDetail = () => {
+    router.push(`/courses/${course.id}`);
+  };
+
+
   return (
     <article className="bg-white rounded-lg shadow-md p-6 flex flex-col">
       <img
@@ -14,12 +24,15 @@ function CourseCard({ course }: { course: Course }) {
       <h3
         className="text-xl font-semibold mb-2 text-indigo-700"
         title={course.name} // hiển thị full tên khi hover
->
+      >
         {course.name.length > 15 ? course.name.slice(0, 15) + "..." : course.name}
       </h3>
       <p className="text-gray-700 flex-grow">{course.description}</p>
       <p className="text-sm text-gray-500 mt-2">Trình độ: {course.level}</p>
-      <button className="mt-4 bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition">
+      <button
+        className="mt-4 bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition"
+        onClick={handleViewDetail}
+      >
         Xem chi tiết
       </button>
     </article>
