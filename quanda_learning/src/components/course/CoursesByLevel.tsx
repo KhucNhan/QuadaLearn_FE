@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchCoursesByLevel, Course } from "@/lib/CoursesAPI";
+import { fetchCoursesByLevel, Course } from "@/lib/courses/CoursesAPI";
 import { CourseCard } from "./course-card";
 
 export default function CoursesByLevel({ level }: { level: string }) {
