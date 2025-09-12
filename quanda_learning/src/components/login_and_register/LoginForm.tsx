@@ -18,8 +18,20 @@ export default function LoginForm() {
     try {
       const data = await login(email, password);
 
-      // 👉 Lưu token vào localStorage
+      // 👉 Lưu token (tuỳ bạn có dùng hay không)
       localStorage.setItem("token", data.token);
+
+      // 👉 Lưu thông tin người dùng vào localStorage để Header hiển thị avatar
+      localStorage.setItem("user", JSON.stringify({
+        id: data.id,
+        name: data.name,
+        email: email,
+        token: data.token,
+        role: data.authorities?.[0]?.authority || "USER"
+      }));
+
+
+      // 👉 Điều hướng sau khi đăng nhập
       router.push("/home");
     } catch (err) {
       setError("Sai email hoặc mật khẩu");

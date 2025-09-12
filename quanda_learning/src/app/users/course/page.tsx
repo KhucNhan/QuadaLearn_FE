@@ -117,7 +117,7 @@ export default function CoursesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header isLoggedIn={true} userName={userData.name} />
+      {/* <Header isLoggedIn={true} userName={userData.name} /> */}
 
       <main className="container mx-auto px-4 py-8">
         {/* Welcome Section */}
@@ -190,9 +190,9 @@ export default function CoursesPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recommendedCourses.map((course) => (
+            {/* {recommendedCourses.map((course) => (
               <CourseCard key={course.id} {...course} />
-            ))}
+            ))} */}
           </div>
         </section>
 
@@ -201,9 +201,9 @@ export default function CoursesPage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Tất cả khóa học</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allCourses.map((course) => (
+            {/* {allCourses.map((course) => (
               <CourseCard key={course.id} {...course} />
-            ))}
+            ))} */}
           </div>
         </section>
       </main>
