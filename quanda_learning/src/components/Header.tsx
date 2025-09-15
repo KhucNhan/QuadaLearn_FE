@@ -64,24 +64,32 @@ export default function Header() {
       </button>
 
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-40 bg-white text-indigo-700 rounded-md shadow-lg z-50">
-          <button
-            onClick={() => {
-              router.push("/profile");
-              setShowDropdown(false);
-            }}
-            className="w-full text-left px-4 py-2 hover:bg-indigo-100"
-          >
-            Thông tin cá nhân
-          </button>
-          <button
-            onClick={handleLogout}
-            className="w-full text-left px-4 py-2 hover:bg-indigo-100"
-          >
-            Đăng xuất
-          </button>
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl z-50 border border-indigo-100 animate-fade-in">
+          <div className="py-2">
+
+            <button
+              onClick={() => {
+                router.push("/profile");
+                setShowDropdown(false);
+              }}
+              className="w-full text-left px-4 py-3 text-indigo-700 font-semibold hover:bg-indigo-100 hover:text-indigo-900 transition-all duration-200 rounded-t-xl flex items-center space-x-2"
+            >
+              <i className="fas fa-user-circle text-indigo-500"></i>
+              <span>Thông tin</span>
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-3 text-red-600 font-semibold hover:bg-red-100 hover:text-red-800 transition-all duration-200 rounded-b-xl flex items-center space-x-2"
+            >
+              <i className="fas fa-sign-out-alt text-red-500"></i>
+              <span>Đăng xuất</span>
+            </button>
+
+          </div>
         </div>
       )}
+
     </div>
   );
 
@@ -93,9 +101,10 @@ export default function Header() {
       <button onClick={() => handleNavClick("capacityTest")} className="hover:text-yellow-300 transition-colors duration-300">Kiểm tra trình độ</button>
     </nav>
   ) : (
-    <nav className="hidden md:flex space-x-8 mt-4 md:mt-0 text-white font-semibold text-lg drop-shadow-md">
-      <button onClick={() => router.push('/dashboard')} className="hover:text-yellow-300 transition-colors duration-300">Bảng điều khiển</button>
-      <button onClick={() => router.push('/my-courses')} className="hover:text-yellow-300 transition-colors duration-300">Khóa học của tôi</button>
+    <nav className="hidden md:flex space-x-20 mt-4 md:mt-0 text-white font-semibold text-lg drop-shadow-md">
+      <button onClick={() => router.push('/dashboard')} className="hover:text-yellow-300 transition-colors duration-300">Trang chủ</button>
+      <button onClick={() => router.push('/my-courses')} className="hover:text-yellow-300 transition-colors duration-300">Khóa học</button>
+      <button onClick={() => router.push('/notifications')} className="hover:text-yellow-300 transition-colors duration-300">Luyện tập</button>
       <button onClick={() => router.push('/notifications')} className="hover:text-yellow-300 transition-colors duration-300">Thông báo</button>
     </nav>
   );
@@ -109,10 +118,10 @@ export default function Header() {
     </>
   ) : (
     <>
-      <a onClick={() => router.push('/dashboard')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Bảng điều khiển</a>
-      <a onClick={() => router.push('/my-courses')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Khóa học của tôi</a>
+      <a onClick={() => router.push('/dashboard')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Trang chủ</a>
+      <a onClick={() => router.push('/my-courses')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Khóa học</a>
+      <a onClick={() => router.push('/notifications')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Luyện tập</a>
       <a onClick={() => router.push('/notifications')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Thông báo</a>
-      {renderAvatar()}
     </>
   );
 
