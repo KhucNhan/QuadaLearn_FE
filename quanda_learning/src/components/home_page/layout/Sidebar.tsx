@@ -1,6 +1,7 @@
 "use client";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Sidebar() {
@@ -9,6 +10,8 @@ export default function Sidebar() {
     const [openBasic, setOpenBasic] = useState(false);
     const [openIntermediate, setOpenIntermediate] = useState(false);
     const [openAdvanced, setOpenAdvanced] = useState(false);
+
+    const router = useRouter();
 
 
     return (
@@ -46,8 +49,8 @@ export default function Sidebar() {
                                 </button>
                                 {openBasic && (
                                     <div className="ml-5 mt-1 space-y-1">
-                                        <a href="#A1" className="block hover:text-yellow-300">A1 – Beginner</a>
-                                        <a href="#A2" className="block hover:text-yellow-300">A2 – Elementary</a>
+                                        <a href="#Beginner" className="block hover:text-yellow-300">A1 – Beginner</a>
+                                        <a href="#Elementary" className="block hover:text-yellow-300">A2 – Elementary</a>
                                     </div>
                                 )}
                             </div>
@@ -63,8 +66,8 @@ export default function Sidebar() {
                                 </button>
                                 {openIntermediate && (
                                     <div className="ml-5 mt-1 space-y-1">
-                                        <a href="#B1" className="block hover:text-yellow-300">B1 – Intermediate</a>
-                                        <a href="#B2" className="block hover:text-yellow-300">B2 – Upper-Intermediate</a>
+                                        <a href="#Intermediate" className="block hover:text-yellow-300">B1 – Intermediate</a>
+                                        <a href="#Upper-Intermediate" className="block hover:text-yellow-300">B2 – Upper-Intermediate</a>
                                     </div>
                                 )}
                             </div>
@@ -80,8 +83,8 @@ export default function Sidebar() {
                                 </button>
                                 {openAdvanced && (
                                     <div className="ml-5 mt-1 space-y-1">
-                                        <a href="#C1" className="block hover:text-yellow-300">C1 – Advanced</a>
-                                        <a href="#C2" className="block hover:text-yellow-300">C2 – Proficient</a>
+                                        <a href="#Advanced" className="block hover:text-yellow-300">C1 – Advanced</a>
+                                        <a href="#Proficient" className="block hover:text-yellow-300">C2 – Proficient</a>
                                     </div>
                                 )}
                             </div>
@@ -103,7 +106,12 @@ export default function Sidebar() {
 
                     {openSkills && (
                         <div className="ml-8 mt-2 space-y-2 text-white text-base font-medium">
-                            <a href="#vocabulary" className="block hover:text-yellow-300 text-lg">• Từ vựng</a>
+                            <button
+                                onClick={() => router.push("/skill/vocabulary")}
+                                className="block text-left w-full hover:text-yellow-300 text-lg"
+                            >
+                                • Từ vựng
+                            </button>
                             <a href="#grammar" className="block hover:text-yellow-300 text-lg">• Ngữ pháp</a>
                             <a href="#reading" className="block hover:text-yellow-300 text-lg">• Đọc hiểu</a>
                         </div>
