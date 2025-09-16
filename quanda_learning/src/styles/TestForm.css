@@ -1,3 +1,149 @@
-.target{
+/* Professional TestForm Styles */
+.target {
     border-radius: 10px;
+}
+
+/* Subtle animations */
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0px); 
+    }
+    50% { 
+        transform: translateY(-5px); 
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.floating-element {
+    animation: float 4s ease-in-out infinite;
+}
+
+/* Form input focus animations */
+.form-input:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15), 
+                0 5px 10px rgba(139, 92, 246, 0.1);
+}
+
+.form-input:hover {
+    transform: translateY(-0.5px);
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
+}
+
+/* Button hover effects - Professional */
+.test-button:hover {
+    box-shadow: 0 15px 35px rgba(99, 102, 241, 0.3),
+                0 5px 15px rgba(139, 92, 246, 0.2);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.test-button:active {
+    transform: translateY(0px) scale(1.01);
+}
+
+/* Background pattern animations */
+@keyframes pulse {
+    0%, 100% { 
+        opacity: 0.1; 
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.2; 
+        transform: scale(1.05);
+    }
+}
+
+.bg-pattern {
+    animation: pulse 6s ease-in-out infinite;
+}
+
+/* Success message animation */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-message {
+    animation: slideInUp 0.5s ease-out;
+}
+
+/* Label hover effects */
+.form-label:hover {
+    color: #4f46e5;
+    transition: color 0.3s ease;
+}
+
+/* Form container hover effect */
+.form-container:hover {
+    box-shadow: 0 25px 50px rgba(99, 102, 241, 0.15);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Responsive form container */
+@media (max-width: 768px) {
+    .form-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .form-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+    
+    .form-description {
+        font-size: 1rem;
+    }
+}
+
+/* Custom select dropdown styling - Professional */
+.custom-select {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 10 6'%3E%3Cpath stroke='%234f46e5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
+}
+
+.custom-select:focus {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 10 6'%3E%3Cpath stroke='%238b5cf6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 4 4 4-4'/%3E%3C/svg%3E");
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: all 0.3s ease;
+}
+
+/* Focus states for accessibility */
+.form-input:focus,
+.custom-select:focus,
+.test-button:focus {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+}
+
+/* Loading state for button */
+.test-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Error message styling */
+.error-message {
+    animation: fadeIn 0.3s ease-out;
 }
