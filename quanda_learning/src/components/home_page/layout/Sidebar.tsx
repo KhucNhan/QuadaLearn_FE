@@ -4,7 +4,11 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Sidebar() {
+interface SidebarProps {
+    setActiveSection: (section: string) => void;
+}
+
+export default function Sidebar({ setActiveSection }: SidebarProps) {
     const [openCourse, setOpenCourse] = useState(false);
     const [openSkills, setOpenSkills] = useState(false);
     const [openBasic, setOpenBasic] = useState(false);
@@ -100,14 +104,14 @@ export default function Sidebar() {
                         className="flex w-full items-center space-x-3 px-4 py-2 rounded-md text-lg font-semibold hover:bg-yellow-400 hover:text-indigo-900 transition-all"
                     >
                         <i className="fas fa-brain w-5"></i>
-                        <span>Kỹ năng</span>
+                        <span>Kiến thức</span>
                         <i className={`fas fa-chevron-${openSkills ? "down" : "right"} ml-auto`}></i>
                     </button>
 
                     {openSkills && (
                         <div className="ml-8 mt-2 space-y-2 text-white text-base font-medium">
                             <button
-                                onClick={() => router.push("/skill/vocabulary")}
+                                onClick={() => setActiveSection("vocabulary")}
                                 className="block text-left w-full hover:text-yellow-300 text-lg"
                             >
                                 • Từ vựng

@@ -5,7 +5,12 @@ import { Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import '../styles/Header.css';
 
-export default function Header() {
+interface HeaderProps {
+  setActiveSection: (section: string) => void;
+}
+
+export default function Header({ setActiveSection }: HeaderProps) {
+
   const router = useRouter();
   const [open, setOpen] = useState(false); // Mobile menu
   const [user, setUser] = useState<any>(null);
@@ -102,7 +107,12 @@ export default function Header() {
     </nav>
   ) : (
     <nav className="hidden md:flex space-x-20 mt-4 md:mt-0 text-white font-semibold text-lg drop-shadow-md">
-      <button onClick={() => router.push('/dashboard')} className="hover:text-yellow-300 transition-colors duration-300">Trang chủ</button>
+      <button
+        onClick={() => setActiveSection("home")}
+        className="hover:text-yellow-300 transition-colors duration-300"
+      >
+        Trang chủ
+      </button>
       <button onClick={() => router.push('/my-courses')} className="hover:text-yellow-300 transition-colors duration-300">Khóa học</button>
       <button onClick={() => router.push('/notifications')} className="hover:text-yellow-300 transition-colors duration-300">Luyện tập</button>
       <button onClick={() => router.push('/notifications')} className="hover:text-yellow-300 transition-colors duration-300">Thông báo</button>

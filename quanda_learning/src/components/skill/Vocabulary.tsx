@@ -1,53 +1,18 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import { Volume2 } from "lucide-react";
 import "../../styles/skill/Vocabulary.css";
+import { fetchVocabularies } from "@/lib/skill/fetchVocabulary";
 
 interface VocabularyItem {
+  id: number;
   word: string;
-  pronunciation: string;
+  transcription: string;
   meaning: string;
-  example: string;
-  imageUrl: string;
+  exampleSentence: string;
+  imageUrl?: string;
 }
-
-const vocabularyList: VocabularyItem[] = [
-  {
-    word: "apple",
-    pronunciation: "/ˈæp.əl/",
-    meaning: "quả táo",
-    example: "I eat an apple every day.",
-    imageUrl: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=80&q=80",
-  },
-  {
-    word: "book",
-    pronunciation: "/bʊk/",
-    meaning: "sách",
-    example: "She is reading a book.",
-    imageUrl: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=80&q=80",
-  },
-  {
-    word: "computer",
-    pronunciation: "/kəmˈpjuː.tər/",
-    meaning: "máy tính",
-    example: "The computer is very fast.",
-    imageUrl: "https://images.unsplash.com/photo-1518773553398-650c184e0bb3?auto=format&fit=crop&w=80&q=80",
-  },
-  {
-    word: "education",
-    pronunciation: "/ˌedʒ.ʊˈkeɪ.ʃən/",
-    meaning: "giáo dục",
-    example: "Education is important for success.",
-    imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=80&q=80",
-  },
-  {
-    word: "language",
-    pronunciation: "/ˈlæŋ.ɡwɪdʒ/",
-    meaning: "ngôn ngữ",
-    example: "She speaks three languages.",
-    imageUrl: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=80&q=80",
-  },
-];
 
 const VocabularyCard: React.FC<{ item: VocabularyItem }> = ({ item }) => {
   const [flipped, setFlipped] = useState(false);
@@ -72,25 +37,28 @@ const VocabularyCard: React.FC<{ item: VocabularyItem }> = ({ item }) => {
 
   return (
     <div
-      className="w-64 h-80 perspective cursor-pointer"
+      className="w-[200px] h-[300px] perspective cursor-pointer "
       onClick={() => setFlipped(!flipped)}
       aria-label={`Thẻ từ vựng ${item.word}, nhấn để xem ví dụ`}
     >
       <div
-        className={`relative w-full h-full duration-500 transform-style preserve-3d ${
-          flipped ? "rotate-y-180" : ""
-        }`}
+        className={`relative w-full h-full duration-500 transform-style preserve-3d ${flipped ? "rotate-y-180" : ""}`}
       >
         {/* Mặt trước */}
-        <div className="absolute w-full h-full bg-white rounded-xl shadow-md backface-hidden flex flex-col items-center p-4">
+        <div className="absolute w-[200px] h-[300px] bg-white rounded-xl shadow-md backface-hidden flex flex-col items-center p-4">
           <img
             src={item.imageUrl}
             alt={`Ảnh minh họa từ ${item.word}`}
-            className="w-20 h-20 object-cover rounded-md mb-4"
+            className=" w-[200px] h-[100px] object-cover rounded-md mb-4"
             loading="lazy"
           />
-          <h2 className="text-2xl font-bold text-gray-900">{item.word}</h2>
-          <p className="text-sm text-gray-500 italic mb-2">{item.pronunciation}</p>
+          <h2
+            className="text-2xl font-bold text-gray-900 w-full break-words text-center"
+            title={item.word} // Tooltip hiện toàn bộ từ khi hover
+          >
+            {item.word.length > 10 ? `${item.word.slice(0, 10)}...` : item.word}
+          </h2>
+          <p className="text-sm text-gray-500 italic mb-2">{item.transcription}</p>
           <p className="text-gray-700 mb-4">{item.meaning}</p>
           <button
             onClick={(e) => {
@@ -98,18 +66,17 @@ const VocabularyCard: React.FC<{ item: VocabularyItem }> = ({ item }) => {
               speak(item.word);
             }}
             aria-label={`Nghe phát âm từ ${item.word}`}
-            className={`p-2 rounded-full transition-colors ${
-              speaking ? "bg-blue-100 text-blue-600" : "text-gray-400 hover:bg-gray-200 hover:text-gray-700"
-            }`}
+            className={`p-2 rounded-full transition-colors ${speaking ? "bg-blue-100 text-blue-600" : "text-gray-400 hover:bg-gray-200 hover:text-gray-700"
+              }`}
           >
             <Volume2 className="w-6 h-6" />
           </button>
         </div>
 
         {/* Mặt sau */}
-        <div className="absolute w-full h-full bg-white rounded-xl shadow-md backface-hidden rotate-y-180 p-6 flex flex-col justify-center">
+        <div className="absolute w-[200px] h-[300px] bg-white rounded-xl shadow-md backface-hidden rotate-y-180 p-4 flex flex-col justify-center">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Ví dụ</h3>
-          <p className="text-gray-700 italic">"{item.example}"</p>
+          <p className="text-gray-700 italic">"{item.exampleSentence}"</p>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -127,13 +94,66 @@ const VocabularyCard: React.FC<{ item: VocabularyItem }> = ({ item }) => {
 };
 
 const Vocabulary = () => {
+  const [vocabularyList, setVocabularyList] = useState<VocabularyItem[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
+  useEffect(() => {
+    const loadVocabularies = async () => {
+      const data = await fetchVocabularies();
+
+      const dataWithImages = data.map((item) => ({
+        ...item,
+        imageUrl:
+          item.imageUrl ||
+          "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
+      }));
+
+      setVocabularyList(dataWithImages);
+    };
+
+    loadVocabularies();
+  }, []);
+
+  // Phân trang
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = vocabularyList.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(vocabularyList.length / itemsPerPage);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6">
-      <h1 className="text-3xl font-semibold mb-8 text-gray-800">Từ Vựng Tiếng Anh</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {vocabularyList.map((item) => (
-          <VocabularyCard key={item.word} item={item} />
+      <h3 className="text-2xl md:text-3xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text drop-shadow-md tracking-wide uppercase">
+        📚 ÔN TẬP TỪ VỰNG
+      </h3>
+
+
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-15">
+        {currentItems.map((item) => (
+          <VocabularyCard key={item.id} item={item} />
         ))}
+      </div>
+
+      {/* Nút chuyển trang */}
+      <div className="mt-8 flex gap-4">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-indigo-600 text-white rounded disabled:bg-gray-300"
+        >
+          Trang trước
+        </button>
+        <span className="text-gray-700 mt-2">
+          Trang {currentPage} / {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-indigo-600 text-white rounded disabled:bg-gray-300"
+        >
+          Trang sau
+        </button>
       </div>
     </div>
   );
