@@ -5,12 +5,14 @@ import Sidebar from "@/components/home_page/layout/Sidebar";
 import Header from "@/components/Header";
 import HeroSection from "@/components/home_page/layout/HeroSection";
 import HighlightedCourses from "@/components/home_page/sections/HighlightedCourses";
-import CoursesByLevels from "@/components/home_page/sections/CoursesByLevels";
 import Footer from "@/components/Footer";
 import Vocabulary from "@/components/skill/Vocabulary";
+import CoursesByLevel from "@/components/course/CoursesByLevel";
 
 export default function HomePage() {
   const [activeSection, setActiveSection] = useState<string>("home");
+  const [selectedCourseLevel, setSelectedCourseLevel] = useState<string | null>(null);
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -24,7 +26,10 @@ export default function HomePage() {
       <div className="flex flex-1 pt-16 relative">
         {/* Sidebar */}
         <div className="hidden md:block fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] z-40 bg-white shadow border-t border-indigo-300">
-          <Sidebar setActiveSection={setActiveSection} />
+          <Sidebar
+            setActiveSection={setActiveSection}
+            setSelectedCourseLevel={setSelectedCourseLevel}
+          />
         </div>
 
         {/* Nội dung chính */}
@@ -33,9 +38,16 @@ export default function HomePage() {
             <>
               <HeroSection />
               <HighlightedCourses />
-              <CoursesByLevels />
+              {/* <CoursesByLevels /> */}
               <Footer />
             </>
+          )}
+          {activeSection === "course-levels" && selectedCourseLevel && (
+            <>
+             <CoursesByLevel level={selectedCourseLevel} />
+             <Footer />
+            </>
+           
           )}
           {activeSection === "vocabulary" && <Vocabulary />}
         </main>
