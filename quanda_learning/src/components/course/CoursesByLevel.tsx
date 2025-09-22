@@ -27,8 +27,11 @@ export default function CoursesByLevel({ level }: { level: string }) {
 
   return (
     <section className="space-y-6">
-      <h2 className="text-2xl font-bold text-indigo-700">{level}</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <h2 className="text-[40px] pt-5 text-center font-bold text-indigo-700">
+        {level}
+      </h2>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-4" style={{marginBottom: 30}}>
         {courses.map((c) => (
           <CourseCard
             key={c.id}
@@ -44,6 +47,7 @@ export default function CoursesByLevel({ level }: { level: string }) {
           />
         ))}
       </div>
+
     </section>
   );
 }

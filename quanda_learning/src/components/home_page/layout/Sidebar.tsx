@@ -1,14 +1,26 @@
 "use client";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Sidebar() {
+interface SidebarProps {
+    setActiveSection: (section: string) => void;
+    setSelectedCourseLevel: (level: string | null) => void;
+}
+
+
+export default function Sidebar({
+    setActiveSection,
+    setSelectedCourseLevel,
+}: SidebarProps) {
     const [openCourse, setOpenCourse] = useState(false);
     const [openSkills, setOpenSkills] = useState(false);
     const [openBasic, setOpenBasic] = useState(false);
     const [openIntermediate, setOpenIntermediate] = useState(false);
     const [openAdvanced, setOpenAdvanced] = useState(false);
+
+    const router = useRouter();
 
 
     return (
@@ -46,8 +58,28 @@ export default function Sidebar() {
                                 </button>
                                 {openBasic && (
                                     <div className="ml-5 mt-1 space-y-1">
-                                        <a href="#A1" className="block hover:text-yellow-300">A1 – Beginner</a>
-                                        <a href="#A2" className="block hover:text-yellow-300">A2 – Elementary</a>
+                                        <a
+                                            href="#"
+                                            onClick={() => {
+                                                setActiveSection("course-levels");
+                                                setSelectedCourseLevel("Beginner");
+                                            }}
+                                            className="block hover:text-yellow-300"
+                                        >
+                                            A1 – Beginner
+                                        </a>
+
+
+                                        <a
+                                            href="#"
+                                            onClick={() => {
+                                                setActiveSection("course-levels");
+                                                setSelectedCourseLevel("Elementary");
+                                            }}
+                                            className="block hover:text-yellow-300"
+                                        >
+                                            A2 – Elementary
+                                        </a>
                                     </div>
                                 )}
                             </div>
@@ -63,8 +95,28 @@ export default function Sidebar() {
                                 </button>
                                 {openIntermediate && (
                                     <div className="ml-5 mt-1 space-y-1">
-                                        <a href="#B1" className="block hover:text-yellow-300">B1 – Intermediate</a>
-                                        <a href="#B2" className="block hover:text-yellow-300">B2 – Upper-Intermediate</a>
+                                        <a
+                                            href="#"
+                                            onClick={() => {
+                                                setActiveSection("course-levels");
+                                                setSelectedCourseLevel("Intermediate");
+                                            }}
+                                            className="block hover:text-yellow-300"
+                                        >
+                                            B1 – Intermediate
+                                        </a>
+
+
+                                        <a
+                                            href="#"
+                                            onClick={() => {
+                                                setActiveSection("course-levels");
+                                                setSelectedCourseLevel("Upper-Intermediate");
+                                            }}
+                                            className="block hover:text-yellow-300"
+                                        >
+                                            B2 – Upper-Intermediate
+                                        </a>
                                     </div>
                                 )}
                             </div>
@@ -80,8 +132,29 @@ export default function Sidebar() {
                                 </button>
                                 {openAdvanced && (
                                     <div className="ml-5 mt-1 space-y-1">
-                                        <a href="#C1" className="block hover:text-yellow-300">C1 – Advanced</a>
-                                        <a href="#C2" className="block hover:text-yellow-300">C2 – Proficient</a>
+                                        <a
+                                            href="#"
+                                            onClick={() => {
+                                                setActiveSection("course-levels");
+                                                setSelectedCourseLevel("Advanced");
+                                            }}
+                                            className="block hover:text-yellow-300"
+                                        >
+                                            C1 – Advanced
+                                        </a>
+
+
+                                        <a
+                                            href="#"
+                                            onClick={() => {
+                                                setActiveSection("course-levels");
+                                                setSelectedCourseLevel("Proficient");
+                                            }}
+                                            className="block hover:text-yellow-300"
+                                        >
+                                            C2 – Proficient
+                                        </a>
+
                                     </div>
                                 )}
                             </div>
@@ -97,13 +170,18 @@ export default function Sidebar() {
                         className="flex w-full items-center space-x-3 px-4 py-2 rounded-md text-lg font-semibold hover:bg-yellow-400 hover:text-indigo-900 transition-all"
                     >
                         <i className="fas fa-brain w-5"></i>
-                        <span>Kỹ năng</span>
+                        <span>Kiến thức</span>
                         <i className={`fas fa-chevron-${openSkills ? "down" : "right"} ml-auto`}></i>
                     </button>
 
                     {openSkills && (
                         <div className="ml-8 mt-2 space-y-2 text-white text-base font-medium">
-                            <a href="#vocabulary" className="block hover:text-yellow-300 text-lg">• Từ vựng</a>
+                            <button
+                                onClick={() => setActiveSection("vocabulary")}
+                                className="block text-left w-full hover:text-yellow-300 text-lg"
+                            >
+                                • Từ vựng
+                            </button>
                             <a href="#grammar" className="block hover:text-yellow-300 text-lg">• Ngữ pháp</a>
                             <a href="#reading" className="block hover:text-yellow-300 text-lg">• Đọc hiểu</a>
                         </div>
