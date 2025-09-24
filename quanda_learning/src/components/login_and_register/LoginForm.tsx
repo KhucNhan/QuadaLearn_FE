@@ -35,8 +35,13 @@ export default function LoginForm() {
         }),
       )
 
-      // 👉 Điều hướng sau khi đăng nhập
-      router.push("/home")
+      if (data.needsCompletion) {
+        router.push("/authenticate/complete-profile")
+      } else {
+        router.push("/home")
+      }
+
+
     } catch (err) {
       setError("Sai email hoặc mật khẩu")
       console.error(err)
