@@ -1,5 +1,6 @@
 // src/lib/api.ts
 export interface LoginResponse {
+  needsCompletion: any;
   id: number;
   token: string;
   name: string;

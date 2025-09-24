@@ -11,7 +11,7 @@ export default function GoogleCallback() {
     const token = searchParams.get("token")
     const name = searchParams.get("name")
     const email = searchParams.get("email")
-    const incomplete = searchParams.get("incomplete") === "true"
+    const needsCompletion = searchParams.get("needsCompletion") === "true"
 
     if (token && email) {
       // 👉 Lưu token và user info
@@ -21,7 +21,7 @@ export default function GoogleCallback() {
         JSON.stringify({ name, email, token, role: "ROLE_USER" })
       )
 
-      if (incomplete) {
+      if (needsCompletion) {
         router.push("/authenticate/complete-profile") // cần bổ sung level + goal
       } else {
         router.push("/home") // đủ thông tin → sang home
