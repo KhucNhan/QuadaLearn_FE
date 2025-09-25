@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import TestSidebar from "./TestSideBar";
 import { useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import React, { useRef } from "react";
+
 
 interface Question {
   id: number;
@@ -26,6 +28,7 @@ export default function TestPage({ testId }: { testId: number }) {
 
   const searchParams = useSearchParams();
   const level = searchParams.get("level") || "unknown";
+  const feedbackRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -84,6 +87,9 @@ export default function TestPage({ testId }: { testId: number }) {
 
       // chỉ lấy scoreAnalysis
       setFeedback(jsonData.scoreAnalysis);
+      setTimeout(() => {
+      feedbackRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
     } catch (err) {
       console.error("❌ Error submitting test:", err);
     } finally {
@@ -124,7 +130,7 @@ export default function TestPage({ testId }: { testId: number }) {
                   if (submitted) {
                     if (opt === q.answerKey) {
                       bgColor = "bg-green-100"; // đáp án đúng
-                    } else if (opt === userAnswer && opt !== q.answerKey) {
+                    } else {
                       bgColor = "bg-red-100"; // sai
                     }
                   }
@@ -154,15 +160,18 @@ export default function TestPage({ testId }: { testId: number }) {
 
         {/* Feedback */}
         {feedback && (
-          <div className="mt-8 p-4 bg-green-50 border border-green-300 rounded-lg">
-            <h3 className="text-lg font-semibold text-green-700 mb-2">
-              AI Feedback:
-            </h3>
-            <div className="prose prose-green">
-              <ReactMarkdown>{feedback}</ReactMarkdown>
-            </div>
-          </div>
-        )}
+  <div
+    ref={feedbackRef}
+    className="mt-8 p-4 bg-green-50 border border-green-300 rounded-lg"
+  >
+    <h3 className="text-lg font-semibold text-green-700 mb-2">
+      AI Feedback:
+    </h3>
+    <div className="prose prose-green">
+      <ReactMarkdown>{feedback}</ReactMarkdown>
+    </div>
+  </div>
+)}
       </div>
 
       {/* Sidebar */}
