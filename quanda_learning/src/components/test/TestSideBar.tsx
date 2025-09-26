@@ -13,19 +13,26 @@ export default function TestSidebar({
   answers,
   onSubmit,
 }: TestSidebarProps) {
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // 1 giờ -> giây
+  const [timeLeft, setTimeLeft] = useState(1* 60); // 1 giờ
 
+  // Countdown
   useEffect(() => {
-    if (timeLeft <= 0) {
-      onSubmit(); // hết giờ thì auto nộp bài
-      return;
-    }
-
     const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      setTimeLeft((prev) => Math.max(prev - 1, 0));
     }, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  // Khi hết giờ thì auto submit (chỉ chạy 1 lần)
+  useEffect(() => {
+    if (timeLeft === 0) {
+      // delay 1 tick để tránh conflict render
+      const t = setTimeout(() => {
+        onSubmit();
+      }, 0);
+      return () => clearTimeout(t);
+    }
   }, [timeLeft, onSubmit]);
 
   // format hh:mm:ss
@@ -42,16 +49,16 @@ export default function TestSidebar({
     <aside className="w-72 h-screen sticky top-0 bg-white border-l border-gray-200 p-6 flex flex-col">
       {/* Timer */}
       <div className="text-center mb-6">
-        <p className="text-lg font-semibold">Time Remaining</p>
+        <p className="text-lg font-semibold">Thời gian còn lại</p>
         <p className="text-2xl font-bold text-red-600">{formatTime(timeLeft)}</p>
       </div>
 
       {/* Question navigation */}
       <div className="mb-6">
-        <p className="text-lg font-semibold mb-3">Questions</p>
+        <p className="text-lg font-semibold mb-3">Các câu hỏi</p>
         <div className="grid grid-cols-5 gap-2">
           {Array.from({ length: totalQuestions }, (_, i) => {
-            const isAnswered = answers[i + 1]; // check đã chọn chưa
+            const isAnswered = answers[i + 1];
             return (
               <button
                 key={i}
@@ -74,7 +81,7 @@ export default function TestSidebar({
         onClick={onSubmit}
         className="mt-auto w-full py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700"
       >
-        Submit Test
+        Nộp bài
       </button>
     </aside>
   );
