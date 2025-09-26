@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import React, { useRef } from "react";
 
-
 interface Question {
   id: number;
   content: string;
@@ -88,8 +87,8 @@ export default function TestPage({ testId }: { testId: number }) {
       // chỉ lấy scoreAnalysis
       setFeedback(jsonData.scoreAnalysis);
       setTimeout(() => {
-      feedbackRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
+        feedbackRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     } catch (err) {
       console.error("❌ Error submitting test:", err);
     } finally {
@@ -107,7 +106,9 @@ export default function TestPage({ testId }: { testId: number }) {
       {/* Main test content */}
       <div className="flex-1 bg-white rounded-lg shadow p-6">
         <h2 className="text-2xl font-bold text-indigo-700 mb-6">
-          Test {testId}
+          {testId === 1
+            ? "Bài kiểm tra đánh giá năng lực"
+            : `Bài kiểm tra số ${testId}`}
         </h2>
 
         {questions.map((q, idx) => {
@@ -160,18 +161,18 @@ export default function TestPage({ testId }: { testId: number }) {
 
         {/* Feedback */}
         {feedback && (
-  <div
-    ref={feedbackRef}
-    className="mt-8 p-4 bg-green-50 border border-green-300 rounded-lg"
-  >
-    <h3 className="text-lg font-semibold text-green-700 mb-2">
-      AI Feedback:
-    </h3>
-    <div className="prose prose-green">
-      <ReactMarkdown>{feedback}</ReactMarkdown>
-    </div>
-  </div>
-)}
+          <div
+            ref={feedbackRef}
+            className="mt-8 p-4 bg-green-50 border border-green-300 rounded-lg"
+          >
+            <h3 className="text-lg font-semibold text-green-700 mb-2">
+              AI Feedback:
+            </h3>
+            <div className="prose prose-green">
+              <ReactMarkdown>{feedback}</ReactMarkdown>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Sidebar */}
