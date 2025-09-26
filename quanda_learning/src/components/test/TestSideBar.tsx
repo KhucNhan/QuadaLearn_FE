@@ -13,23 +13,27 @@ export default function TestSidebar({
   answers,
   onSubmit,
 }: TestSidebarProps) {
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // 1 giờ -> giây
+  const [timeLeft, setTimeLeft] = useState(1* 60); // 1 giờ
 
+  // Countdown
   useEffect(() => {
-  const timer = setInterval(() => {
-    setTimeLeft((prev) => {
-      if (prev <= 1) {
-        clearInterval(timer);
-        onSubmit(); // hết giờ gọi submit 1 lần
-        return 0;
-      }
-      return prev - 1;
-    });
-  }, 1000);
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => Math.max(prev - 1, 0));
+    }, 1000);
 
-  return () => clearInterval(timer);
-}, [onSubmit]);
+    return () => clearInterval(timer);
+  }, []);
 
+  // Khi hết giờ thì auto submit (chỉ chạy 1 lần)
+  useEffect(() => {
+    if (timeLeft === 0) {
+      // delay 1 tick để tránh conflict render
+      const t = setTimeout(() => {
+        onSubmit();
+      }, 0);
+      return () => clearTimeout(t);
+    }
+  }, [timeLeft, onSubmit]);
 
   // format hh:mm:ss
   const formatTime = (seconds: number) => {
@@ -54,7 +58,7 @@ export default function TestSidebar({
         <p className="text-lg font-semibold mb-3">Các câu hỏi</p>
         <div className="grid grid-cols-5 gap-2">
           {Array.from({ length: totalQuestions }, (_, i) => {
-            const isAnswered = answers[i + 1]; // check đã chọn chưa
+            const isAnswered = answers[i + 1];
             return (
               <button
                 key={i}
