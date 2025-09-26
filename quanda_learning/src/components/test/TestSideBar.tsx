@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from "react";
+
 type TestSidebarProps = {
   totalQuestions: number;
   onNavigate: (index: number) => void;
@@ -11,12 +13,37 @@ export default function TestSidebar({
   answers,
   onSubmit,
 }: TestSidebarProps) {
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // 1 giờ -> giây
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      onSubmit(); // hết giờ thì auto nộp bài
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, onSubmit]);
+
+  // format hh:mm:ss
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, "0")}:${m
+      .toString()
+      .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
   return (
     <aside className="w-72 h-screen sticky top-0 bg-white border-l border-gray-200 p-6 flex flex-col">
       {/* Timer */}
       <div className="text-center mb-6">
         <p className="text-lg font-semibold">Time Remaining</p>
-        <p className="text-2xl font-bold text-red-600">30:00</p>
+        <p className="text-2xl font-bold text-red-600">{formatTime(timeLeft)}</p>
       </div>
 
       {/* Question navigation */}
