@@ -182,7 +182,14 @@ export default function Sidebar({
                             >
                                 • Từ vựng
                             </button>
-                            <a href="#grammar" className="block hover:text-yellow-300 text-lg">• Ngữ pháp</a>
+
+                            <button
+                                onClick={() => setActiveSection("GrammarTopics")}
+                                className="block text-left w-full hover:text-yellow-300 text-lg"
+                            >
+                                • Ngữ pháp
+                            </button>
+                
                             <a href="#reading" className="block hover:text-yellow-300 text-lg">• Đọc hiểu</a>
                         </div>
                     )}
