@@ -54,6 +54,8 @@ export default function RegisterForm() {
     return null;
   };
 
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -77,6 +79,14 @@ export default function RegisterForm() {
       setErrorMessage("Đăng ký thất bại: " + err.message);
     }
   };
+
+  const [open, setOpen] = useState(false);
+
+  const handleNavClick = (sectionId: string) => {
+    router.push(`/#${sectionId}`);
+    setOpen(false); // Đóng menu mobile khi click
+  };
+
 
   return (
     <div className="flex items-center justify-center">
@@ -165,7 +175,7 @@ export default function RegisterForm() {
           Đăng Ký
         </button>
 
-        <p className="text-center text-gray-600 mt-4">
+        <p className="text-center text-gray-600 mt-4 mb-2">
           Đã có tài khoản?{" "}
           <button
             type="button"
@@ -173,6 +183,17 @@ export default function RegisterForm() {
             className="text-blue-600 hover:underline font-semibold"
           >
             Đăng nhập ngay
+          </button>
+        </p>
+
+        <p className="text-center text-gray-600 ">
+          Bạn muốn kiểm tra trình độ?{" "}
+          <button
+            type="button"
+           onClick={() => handleNavClick("capacityTest")}
+            className="text-blue-600 hover:underline font-semibold"
+          >
+            click ngay
           </button>
         </p>
       </form>
