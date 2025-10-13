@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-
+import { useState } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/sections/Hero";
 import Courses from "@/components/sections/Courses";
@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 
 export default function HomePage() {
   const searchParams = useSearchParams();
+  const [activeSection, setActiveSection] = useState<string>("home");
 
   useEffect(() => {
     const scrollToId = searchParams.get("scrollTo");
@@ -27,7 +28,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Header />
+      <Header setActiveSection={setActiveSection} />
       <main className="max-w-7xl mx-auto px-6 py-12 space-y-24">
         <section id="hero">
           <Hero />

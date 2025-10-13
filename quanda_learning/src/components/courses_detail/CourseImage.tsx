@@ -1,4 +1,4 @@
-
+"use client";
 export default function CourseImage({ src }: { src: string }) {
   return (
     <img

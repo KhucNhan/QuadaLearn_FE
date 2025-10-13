@@ -13,7 +13,7 @@ export interface VocabularyItem {
 
 export async function fetchVocabularies(): Promise<VocabularyItem[]> {
   try {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("token");
 
 
     const response = await fetch("http://localhost:8888/vocabularies", {
