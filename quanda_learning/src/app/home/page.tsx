@@ -11,12 +11,15 @@ import GrammarTopics from "@/components/skill/GrammarTopicCard";
 import CoursesByLevel from "@/components/course/CoursesByLevel";
 import TopicLessons from "@/components/skill/TopicLessons";
 import EnglishGrammarGuide from "@/components/skill/grammar/Knowledge";
+import ReadComprehension from "@/components/skill/read/ReadComprehension";
+import ReadingDetail from "@/components/skill/read/ReadingModal";
 
 export default function HomePage() {
   const [activeSection, setActiveSection] = useState<string>("home");
   const [selectedCourseLevel, setSelectedCourseLevel] = useState<string | null>(null);
   const [selectedTopicId, setSelectedTopicId] = useState<number | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null);
+  const [selectedPassage, setSelectedPassage] = useState<any | null>(null); 
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -53,7 +56,27 @@ export default function HomePage() {
             </>
           )}
 
-          {activeSection === "vocabulary" && <Vocabulary />}
+          {activeSection === "vocabulary" &&
+            <>
+              <Vocabulary />
+              <Footer />
+            </>
+          }
+
+
+           {activeSection === "reading" && (
+            <>
+              {selectedPassage ? (
+                <ReadingDetail
+                  passage={selectedPassage}
+                  onBack={() => setSelectedPassage(null)}
+                />
+              ) : (
+                <ReadComprehension onSelectPassage={setSelectedPassage} />
+              )}
+              <Footer />
+            </>
+          )}
 
           {activeSection === "GrammarTopics" && (
             <>
