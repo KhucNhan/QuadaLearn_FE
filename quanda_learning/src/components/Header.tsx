@@ -3,25 +3,38 @@
 import { useState, useEffect, useRef } from "react";
 import { Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
-import '../styles/Header.css';
+import "../styles/Header.css";
+import { ProfileModal } from "../app/profile-modal-user/Profile";
 
 interface HeaderProps {
   setActiveSection: (section: string) => void;
 }
 
 export default function Header({ setActiveSection }: HeaderProps) {
-
   const router = useRouter();
   const [open, setOpen] = useState(false); // Mobile menu
   const [user, setUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false); // Avatar dropdown
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
 
   // Lấy user từ localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
+
+  useEffect(() => {
+    const reloadUser = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) setUser(JSON.parse(storedUser));
+    };
+
+    window.addEventListener("userUpdated", reloadUser);
+    return () => window.removeEventListener("userUpdated", reloadUser);
+  }, []);
+
 
   // Đóng dropdown khi click ra ngoài
   useEffect(() => {
@@ -51,9 +64,13 @@ export default function Header({ setActiveSection }: HeaderProps) {
       <button onClick={() => setShowDropdown(!showDropdown)}>
         {user.avatar && user.avatar !== "/images/default-avatar.png" ? (
           <img
-            src={user.avatar}
+            src={
+              user.avatar.startsWith("http") || user.avatar.startsWith("blob:")
+                ? user.avatar
+                : `http://localhost:8888${user.avatar}`
+            }
             alt="Tài khoản"
-            className="w-12 h-12 rounded-full border-2 border-white shadow-md hover:scale-105 transition-transform"
+            className="w-12 h-12 rounded-full border-2 border-white shadow-md hover:scale-105 transition-transform object-cover"
           />
         ) : (
           <div
@@ -71,13 +88,14 @@ export default function Header({ setActiveSection }: HeaderProps) {
       {showDropdown && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl z-50 border border-indigo-100 animate-fade-in">
           <div className="py-2">
-
             <button
               onClick={() => {
-                router.push("/profile");
-                setShowDropdown(false);
+                setIsProfileOpen(true); // mở modal
+                setShowDropdown(false); // đóng dropdown
               }}
-              className="w-full text-left px-4 py-3 text-indigo-700 font-semibold hover:bg-indigo-100 hover:text-indigo-900 transition-all duration-200 rounded-t-xl flex items-center space-x-2"
+              className="w-full text-left px-4 py-3 text-gray-800 font-semibold 
+                        hover:bg-indigo-100 hover:text-indigo-700 
+                        transition-all duration-200 rounded-t-xl flex items-center space-x-2"
             >
               <i className="fas fa-user-circle text-indigo-500"></i>
               <span>Thông tin</span>
@@ -90,11 +108,9 @@ export default function Header({ setActiveSection }: HeaderProps) {
               <i className="fas fa-sign-out-alt text-red-500"></i>
               <span>Đăng xuất</span>
             </button>
-
           </div>
         </div>
       )}
-
     </div>
   );
 
@@ -138,7 +154,6 @@ export default function Header({ setActiveSection }: HeaderProps) {
   return (
     <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between">
-
         {/* Logo + Tiêu đề */}
         <div className="flex items-center space-x-4">
           <img
@@ -180,6 +195,15 @@ export default function Header({ setActiveSection }: HeaderProps) {
         <nav className="md:hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 border-t border-white/30">
           {mobileNav}
         </nav>
+      )}
+
+      {/* Modal render độc lập, không phụ thuộc dropdown */}
+      {user && (
+        <ProfileModal
+          isOpen={isProfileOpen}
+          onClose={() => setIsProfileOpen(false)}
+          userId={user.id}  // ✅ Truyền userId vào đây
+        />
       )}
     </header>
   );
