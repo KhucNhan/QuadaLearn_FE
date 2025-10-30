@@ -350,9 +350,19 @@ export function ProfileModal({ isOpen, onClose, userId }: ProfileModalProps) {
                 </div>
               </div>
 
-              <div className="mb-4">
-                <h3 className="text-white font-medium text-base mb-3">Chỉnh sửa thông tin</h3>
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-white font-medium text-base">
+                  Chỉnh sửa thông tin:
+                </h3>
+
+    
+                {!editInfo.gender && (
+                  <p className="text-red-400 text-sm ml-4">
+                    ⚠️ Vui lòng chọn giới tính
+                  </p>
+                )}
               </div>
+
 
               <div className="space-y-4 mb-6">
                 <div>
@@ -390,7 +400,7 @@ export function ProfileModal({ isOpen, onClose, userId }: ProfileModalProps) {
                         className="w-4 h-4"
                       />
                       <span className="text-white text-sm">Nữ</span>
-                  
+
                     </label>
                   </div>
                 </div>
@@ -410,9 +420,9 @@ export function ProfileModal({ isOpen, onClose, userId }: ProfileModalProps) {
                 >
                   {saving ? "Đang lưu..." : "Cập nhật"}
                 </Button>
-                
+
               </div>
-              
+
               {error && <div className="text-sm text-red-400 mt-2">{error}</div>}
             </div>
           </div>

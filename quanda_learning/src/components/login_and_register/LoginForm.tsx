@@ -32,8 +32,11 @@ export default function LoginForm() {
           email: email,
           token: data.token,
           role: data.authorities?.[0]?.authority || "USER",
+          avatar: data.avatar || "/images/default-avatar.png",
         }),
       )
+
+      window.dispatchEvent(new Event("userUpdated"));
 
       if (data.needsCompletion) {
         router.push("/authenticate/complete-profile")
