@@ -19,6 +19,34 @@ export default function Header({ setActiveSection }: HeaderProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
 
+
+ const isTokenExpired = (token: string): boolean => {
+  try {
+    const payloadBase64 = token.split('.')[1]
+    const payload = JSON.parse(atob(payloadBase64))
+    const exp = payload.exp * 1000  // chuyển giây → mili giây
+    return Date.now() > exp
+  } catch (e) {
+    return true // Nếu lỗi -> xem như hết hạn
+  }
+}
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    const storedUser = localStorage.getItem('user')
+
+    if (token && !isTokenExpired(token)) {
+      setUser(JSON.parse(storedUser || 'null'))
+    } else {
+      // Token hết hạn hoặc không tồn tại
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      setUser(null)  // 👉 về trạng thái chưa đăng nhập
+    }
+  }, [])
+
+
+
   // Lấy user từ localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");

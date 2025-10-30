@@ -1,3 +1,4 @@
+"use client";
 import { Course } from "@/lib/courses/Course_detail";
 
 export default function CourseContent({ course }: { course: Course }) {
