@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import "../styles/Header.css";
-import { ProfileModal } from "../app/profile-modal-user/Profile";
+import { ProfileModal } from "../app/Profile";
 
 interface HeaderProps {
   setActiveSection: (section: string) => void;
