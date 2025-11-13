@@ -62,18 +62,45 @@ export default function TestPage({ testId }: { testId: number }) {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isSubmitted) return; // Ngăn submit nhiều lần
     
     setIsSubmitted(true); // Đánh dấu đã submit
-    const fakeFeedback = "Your score analysis (mock)";
-    setFeedback(fakeFeedback);
+    
+    const payload: TestSubmissionRequest = {
+      aim: level,
+      answers: questions.map((q) => ({
+        questionId: q.id,
+        answer: answers[q.id] || null,
+      })),
+    };
 
-    setTimeout(() => {
-      feedbackRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
+    console.log("📤 Submitting payload:", payload);
 
-    console.log("📤 Answers submitted (mock):", answers);
+    try {
+      setSubmitting(true);
+      const res = await fetch(`http://localhost:8888/tests/${testId}/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Failed to submit test");
+
+      const jsonData = await res.json();
+      console.log("📥 Feedback received:", jsonData);
+
+      // chỉ lấy scoreAnalysis
+      setFeedback(jsonData.scoreAnalysis);
+      setTimeout(() => {
+        feedbackRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } catch (err) {
+      console.error("❌ Error submitting test:", err);
+      setIsSubmitted(false); // Reset nếu submit thất bại
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading)
