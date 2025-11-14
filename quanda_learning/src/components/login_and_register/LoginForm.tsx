@@ -37,14 +37,23 @@ export default function LoginForm() {
       )
 
       window.dispatchEvent(new Event("userUpdated"));
-
+      
+      // 👉 Nếu cần hoàn thiện hồ sơ thì ưu tiên chuyển tới complete-profile
       if (data.needsCompletion) {
         router.push("/authenticate/complete-profile")
-      } else {
-        router.push("/home")
+        return
       }
 
+      // 👉 Kiểm tra role
+      const isAdmin = data.authorities?.some(
+        (role) => role.authority === "ROLE_ADMIN"
+      )
 
+      if (isAdmin) {
+        router.push("/adminDashboard/adminPage") // ✅ ADMIN
+      } else {
+        router.push("/home") // ✅ USER bình thường
+      }
     } catch (err) {
       setError("Sai email hoặc mật khẩu")
       console.error(err)
