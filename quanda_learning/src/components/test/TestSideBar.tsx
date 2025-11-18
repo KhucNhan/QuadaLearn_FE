@@ -15,7 +15,7 @@ export default function TestSidebar({
   onSubmit,
   isSubmitted,
 }: TestSidebarProps) {
-  const [timeLeft, setTimeLeft] = useState(1 * 60); // X x minutes
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // X x minutes
 
   // Countdown - CHỈ chạy khi chưa submit
   useEffect(() => {

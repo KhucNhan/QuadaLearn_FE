@@ -8,28 +8,42 @@ import Link from "next/link";
 interface SidebarProps {
   setActiveSection: (section: string) => void;
   setSelectedCourseLevel: (level: string | null) => void;
+  setSelectedTense: (tenseId: number) => void; // Thêm prop để set thì được chọn
 }
-
 
 export default function Sidebar({
   setActiveSection,
   setSelectedCourseLevel,
+  setSelectedTense,
 }: SidebarProps) {
   const [openCourse, setOpenCourse] = useState(false);
   const [openSkills, setOpenSkills] = useState(false);
   const [openBasic, setOpenBasic] = useState(false);
   const [openIntermediate, setOpenIntermediate] = useState(false);
   const [openAdvanced, setOpenAdvanced] = useState(false);
-  
+  const [openExercises, setOpenExercises] = useState(false); // Thêm state cho Bài tập & Quiz
 
   const router = useRouter();
 
+  // 12 thì tiếng Anh với ID thực tế trong database
+  const tenses = [
+    { id: 31, name: "Hiện tại đơn" },
+    { id: 32, name: "Hiện tại tiếp diễn" },
+    { id: 33, name: "Hiện tại hoàn thành" },
+    { id: 34, name: "Hiện tại hoàn thành tiếp diễn" },
+    { id: 35, name: "Quá khứ đơn" },
+    { id: 36, name: "Quá khứ tiếp diễn" },
+    { id: 37, name: "Quá khứ hoàn thành" },
+    { id: 38, name: "Quá khứ hoàn thành tiếp diễn" },
+    { id: 39, name: "Tương lai đơn" },
+    { id: 40, name: "Tương lai gần (Be Going To)" },
+    { id: 41, name: "Tương lai tiếp diễn" },
+    { id: 42, name: "Tương lai hoàn thành" },
+  ];
 
   return (
     <aside className="pt-[41px] w-64 h-screen fixed top-16 left-0 bg-gradient-to-b from-blue-600 via-green-500 to-teal-400 shadow-2xl border-r border-white/20 text-white z-40">
-      <div className="p-6 border-b border-white/20">
-        <h2 className="text-2xl font-bold tracking-wide">📘 DANH MỤC</h2>
-      </div>
+      
 
       <nav className="p-4 space-y-2 overflow-y-auto h-[calc(100%-4rem)] text-sm font-medium">
         <div>
@@ -57,8 +71,7 @@ export default function Sidebar({
                 >
                   <span>• Cơ bản</span>
                   <i
-                    className={`fas fa-chevron-${openBasic ? "down" : "right"
-                      }`}
+                    className={`fas fa-chevron-${openBasic ? "down" : "right"}`}
                   ></i>
                 </button>
                 {openBasic && (
@@ -73,7 +86,6 @@ export default function Sidebar({
                     >
                       A1 – Beginner
                     </a>
-
                     <a
                       href="#"
                       onClick={() => {
@@ -96,8 +108,7 @@ export default function Sidebar({
                 >
                   <span>• Trung cấp</span>
                   <i
-                    className={`fas fa-chevron-${openIntermediate ? "down" : "right"
-                      }`}
+                    className={`fas fa-chevron-${openIntermediate ? "down" : "right"}`}
                   ></i>
                 </button>
                 {openIntermediate && (
@@ -112,7 +123,6 @@ export default function Sidebar({
                     >
                       B1 – Intermediate
                     </a>
-
                     <a
                       href="#"
                       onClick={() => {
@@ -125,7 +135,6 @@ export default function Sidebar({
                     </a>
                   </div>
                 )}
-
               </div>
 
               {/* Nâng cao */}
@@ -136,8 +145,7 @@ export default function Sidebar({
                 >
                   <span>• Nâng cao</span>
                   <i
-                    className={`fas fa-chevron-${openAdvanced ? "down" : "right"
-                      }`}
+                    className={`fas fa-chevron-${openAdvanced ? "down" : "right"}`}
                   ></i>
                 </button>
                 {openAdvanced && (
@@ -152,7 +160,6 @@ export default function Sidebar({
                     >
                       C1 – Advanced
                     </a>
-
                     <a
                       href="#"
                       onClick={() => {
@@ -179,8 +186,7 @@ export default function Sidebar({
             <i className="fas fa-brain w-5"></i>
             <span>Kiến thức</span>
             <i
-              className={`fas fa-chevron-${openSkills ? "down" : "right"
-                } ml-auto`}
+              className={`fas fa-chevron-${openSkills ? "down" : "right"} ml-auto`}
             ></i>
           </button>
 
@@ -198,27 +204,48 @@ export default function Sidebar({
               >
                 • Ngữ pháp
               </button>
-
               <button
                 onClick={() => setActiveSection("reading")}
                 className="block text-left w-full hover:text-yellow-300 text-lg"
               >
                 • Đọc hiểu
               </button>
-
-
             </div>
           )}
         </div>
 
-        {/* Bài tập & Quiz */}
-        <a
-          href="#exercises"
-          className="text-lg font-medium flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-yellow-400 hover:text-indigo-900 transition-all"
-        >
-          <i className="fas fa-pencil-alt w-5"></i>
-          <span>Bài tập & Quiz</span>
-        </a>
+        {/* Bài tập & Quiz - Dropdown với 12 thì */}
+        <div>
+          <button
+            onClick={() => setOpenExercises(!openExercises)}
+            className="flex w-full items-center justify-between px-4 py-3 rounded-md text-lg font-semibold hover:bg-yellow-400 hover:text-indigo-900 transition-all"
+          >
+            <div className="flex items-center space-x-3">
+              <i className="fas fa-pencil-alt w-5"></i>
+              <span>Bài tập & Quiz</span>
+            </div>
+            <i
+              className={`fas fa-chevron-${openExercises ? "down" : "right"}`}
+            ></i>
+          </button>
+
+          {openExercises && (
+            <div className="ml-8 mt-2 space-y-2 text-white text-base font-medium">
+              {tenses.map((tense, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setActiveSection("tense-detail");
+                    setSelectedTense(tense.id); // Truyền tenseId (1-12)
+                  }}
+                  className="block text-left w-full hover:text-yellow-300"
+                >
+                  • {tense.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Kiểm tra trình độ */}
         <Link
