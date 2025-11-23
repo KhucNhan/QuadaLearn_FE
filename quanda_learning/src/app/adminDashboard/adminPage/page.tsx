@@ -71,12 +71,11 @@ export default function UserPage() {
     const handleSubmit = async (data: Partial<User>, file?: File) => {
         try {
             if (editingUser) {
-                // cập nhật có file
-                await userApi.update(editingUser.id, data, file);
+                const updatedUser = await userApi.update(editingUser.id, data, file);
 
                 setUsers((prev) =>
                     prev.map((u) =>
-                        u.id === editingUser.id ? { ...u, ...data } : u
+                        u.id === editingUser.id ? updatedUser : u
                     )
                 );
 
@@ -85,7 +84,8 @@ export default function UserPage() {
                     message: "Cập nhật thành công!",
                     severity: "success",
                 });
-            } else {
+            }
+            else {
                 // thêm mới có file
                 const res = await userApi.create(data, file);
 

@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Chip } from "@mui/material";
 import type { User } from "@/lib/types/users";
 
 interface UserTableProps {
@@ -47,25 +47,24 @@ export default function UserTable({
                 <TableCell>Họ và tên</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell align="center">Thao tác</TableCell>
+                <TableCell align="center">Trạng thái</TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
               {users.length > 0 ? (
-                (users || []).filter(Boolean).map((u, index) => {
+                users.map((u, index) => {
                   const avatarUrl = u?.image
                     ? u.image.startsWith("http")
                       ? u.image
                       : `${BACKEND_URL}${u.image.startsWith("/") ? "" : "/"}${u.image}`
                     : "/images/login_register/anhnenlogin.png";
 
-
                   return (
                     <TableRow key={u.id} hover>
-                      {/* STT */}
+
                       <TableCell>{page * rowsPerPage + index + 1}</TableCell>
 
-                      {/* Ảnh đại diện */}
                       <TableCell>
                         <img
                           src={avatarUrl}
@@ -78,18 +77,13 @@ export default function UserTable({
                             borderRadius: "50%",
                             objectFit: "cover",
                             border: "2px solid #1976d2",
-                            backgroundColor: "#f0f0f0",
                           }}
                         />
                       </TableCell>
 
-                      {/* Tên */}
                       <TableCell>{u.name}</TableCell>
-
-                      {/* Email */}
                       <TableCell>{u.email}</TableCell>
 
-                      {/* Hành động */}
                       <TableCell align="center">
                         <Tooltip title="Chỉnh sửa">
                           <IconButton color="primary" onClick={() => onEdit(u)}>
@@ -97,25 +91,37 @@ export default function UserTable({
                           </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Xóa">
-                          <IconButton color="error" onClick={() => onDelete(u)}>
-                            <DeleteIcon />
-                          </IconButton>
+                      </TableCell>
+
+                      <TableCell align="center">
+                        <Tooltip
+                          title={
+                            u.status === "BANNED"
+                              ? "Người dùng bị khóa"
+                              : "Người dùng đang hoạt động"
+                          }
+                        >
+                          <Chip
+                            label={u.status === "BANNED" ? "Đã bị khóa" : "Đang hoạt động"}
+                            color={u.status === "BANNED" ? "error" : "success"}
+                            variant="filled"
+                            sx={{ fontWeight: 600 }}
+                          />
                         </Tooltip>
                       </TableCell>
+
                     </TableRow>
                   );
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    <Typography color="text.secondary">
-                      Không có người dùng nào.
-                    </Typography>
+                  <TableCell colSpan={6} align="center">
+                    <Typography>Không có người dùng nào.</Typography>
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
+
           </Table>
         </TableContainer>
 

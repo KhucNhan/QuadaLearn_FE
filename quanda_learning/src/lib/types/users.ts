@@ -4,16 +4,21 @@ export interface Role {
 }
 
 export type Gender = "MALE" | "FEMALE";
+export type UserStatus = "ACTIVE" | "BANNED";
 
 export interface User {
   id: number;
   email: string;
-  password?: string; // không nên hiển thị ra UI, chỉ để type khớp
+  password?: string; // không hiển thị ra UI
   name?: string;
-  currentLevel?: string; // ví dụ: "A2", "B1"
-  goal?: string; // ví dụ: "B2", "IELTS 6.5"
-  image?: string | null; // ảnh đại diện
-  background?: string | null; // ảnh nền
+  currentLevel?: string;
+  goal?: string;
+  image?: string | null;
+  background?: string | null;
   gender?: Gender | null;
-  roles?: Role[]; // danh sách role (ví dụ: ROLE_USER, ROLE_ADMIN)
+  roles?: Role[];
+
+  // 🟢 Trạng thái người dùng
+  status: UserStatus;
 }
+

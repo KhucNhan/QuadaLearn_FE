@@ -2,7 +2,7 @@ import React, { useState, ReactNode } from "react";
 import { Box } from "@mui/material";
 import Header from "@/components/admin/Header";
 import Sidebar from "@/components/admin/Sidebar";
-
+import { useRouter } from "next/navigation";
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,10 +12,17 @@ interface LayoutProps {
 
 export default function Layout({ children, toggleMode, mode }: LayoutProps) {
   const [openSidebar, setOpenSidebar] = useState(true);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    router.push("/authenticate/login");
+  };
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
-      <Sidebar open={openSidebar} />
+      <Sidebar open={openSidebar} onLogout={handleLogout} /> {/* ⬅️ TRUYỀN PROP */}
       <Box
         sx={{
           flex: 1,

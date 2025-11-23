@@ -11,17 +11,20 @@ import {
   Divider,
   Tooltip,
 } from "@mui/material";
+
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 interface SidebarProps {
   open: boolean;
+  onLogout: () => void; // hàm logout truyền từ cha
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ open }) => {
+const Sidebar: React.FC<SidebarProps> = ({ open, onLogout }) => {
   const menuItems = [
-    { text: "Dashboard", icon: <DashboardIcon /> },
-    { text: "Users", icon: <PeopleIcon /> },
+    { text: "Dashboard", icon: <DashboardIcon />, onClick: () => {} },
+    { text: "Users", icon: <PeopleIcon />, onClick: () => {} },
   ];
 
   return (
@@ -41,7 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
         {menuItems.map((item) => (
           <Tooltip key={item.text} title={!open ? item.text : ""} placement="right">
             <ListItem disablePadding>
-              <ListItemButton>
+              <ListItemButton onClick={item.onClick}>
                 <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>
                   {item.icon}
                 </ListItemIcon>
@@ -51,7 +54,27 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
           </Tooltip>
         ))}
       </List>
+
       <Divider />
+
+      {/* Nút đăng xuất */}
+      <Tooltip title={!open ? "Đăng xuất" : ""} placement="right">
+        <ListItem disablePadding>
+          <ListItemButton onClick={onLogout}>
+            <ListItemIcon
+              sx={{ minWidth: 0, justifyContent: "center", color: "red" }}
+            >
+              <LogoutIcon />
+            </ListItemIcon>
+            {open && (
+              <ListItemText
+                primary="Đăng xuất"
+                sx={{ ml: 2, color: "red", fontWeight: "bold" }}
+              />
+            )}
+          </ListItemButton>
+        </ListItem>
+      </Tooltip>
     </Drawer>
   );
 };

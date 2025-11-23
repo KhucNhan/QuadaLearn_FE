@@ -36,6 +36,9 @@ export interface UserFormData extends Partial<User> {
 const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const genders = ["MALE", "FEMALE"];
 
+const BACKEND_URL = "http://localhost:8888";
+
+
 export default function UserFormDialog({
   open,
   onClose,
@@ -61,12 +64,18 @@ export default function UserFormDialog({
     reset(defaultValues);
   }, [defaultValues, reset]);
 
-  // Ảnh preview
   const previewUrl = useMemo(() => {
     if (selectedFile && selectedFile[0]) {
       return URL.createObjectURL(selectedFile[0]);
     }
-    return defaultValues?.image || "";
+
+    if (defaultValues?.image) {
+      return defaultValues.image.startsWith("http")
+        ? defaultValues.image
+        : `${BACKEND_URL}${defaultValues.image}`;
+    }
+
+    return "";
   }, [selectedFile, defaultValues]);
 
   const handleFormSubmit = (data: UserFormData) => {
@@ -218,6 +227,22 @@ export default function UserFormDialog({
               </Select>
             </FormControl>
           </Stack>
+
+          {/* Trạng thái người dùng – chỉ hiển thị khi edit */}
+          {defaultValues?.id && (
+            <FormControl fullWidth>
+              <InputLabel>Trạng thái</InputLabel>
+              <Select
+                value={watch("status") || "ACTIVE"}
+                label="Trạng thái"
+                onChange={(e) => setValue("status", e.target.value as "ACTIVE" | "BANNED")}
+              >
+                <MenuItem value="ACTIVE">Đang hoạt động</MenuItem>
+                <MenuItem value="BANNED">Đã bị khóa</MenuItem>
+              </Select>
+            </FormControl>
+          )}
+
 
           <DialogActions sx={{ justifyContent: "center", width: "100%" }}>
             <Button onClick={onClose} color="inherit" variant="outlined">
