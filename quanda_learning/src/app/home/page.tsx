@@ -13,13 +13,20 @@ import TopicLessons from "@/components/skill/TopicLessons";
 import EnglishGrammarGuide from "@/components/skill/grammar/Knowledge";
 import ReadComprehension from "@/components/skill/read/ReadComprehension";
 import ReadingDetail from "@/components/skill/read/ReadingModal";
+import { Course } from "@/lib/courses/AllCoursesAPI";
+import CourseDetail from "../../components/course/CourseDetail";
+
+
+
+
 
 export default function HomePage() {
   const [activeSection, setActiveSection] = useState<string>("home");
   const [selectedCourseLevel, setSelectedCourseLevel] = useState<string | null>(null);
   const [selectedTopicId, setSelectedTopicId] = useState<number | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null);
-  const [selectedPassage, setSelectedPassage] = useState<any | null>(null); 
+  const [selectedPassage, setSelectedPassage] = useState<any | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -43,11 +50,24 @@ export default function HomePage() {
 
           {activeSection === "home" && (
             <>
-              <HeroSection />
-              <HighlightedCourses />
-              <Footer />
+              {selectedCourse ? (
+                <>
+                  <CourseDetail
+                    course = {selectedCourse}
+                    onBack={() => setSelectedCourse(null)}
+                  />
+                  <Footer />
+                </>
+              ) : (
+                <>
+                  <HeroSection />
+                  <HighlightedCourses onSelectCourse={setSelectedCourse} />
+                  <Footer />
+                </>
+              )}
             </>
           )}
+
 
           {activeSection === "course-levels" && selectedCourseLevel && (
             <>
@@ -64,7 +84,7 @@ export default function HomePage() {
           }
 
 
-           {activeSection === "reading" && (
+          {activeSection === "reading" && (
             <>
               {selectedPassage ? (
                 <ReadingDetail

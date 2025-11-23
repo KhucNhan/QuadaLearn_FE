@@ -10,9 +10,16 @@ interface Props {
 }
 
 export default function CourseSidebar({ courseId }: Props) {
-  const router = useRouter;
-  const appRouter = router();
+  const router = useRouter();
   const [lessonCount, setLessonCount] = useState<number>(0);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); 
+
+  useEffect(() => {
+    
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    setIsLoggedIn(!!token || !!user); 
+  }, []);
 
   useEffect(() => {
     fetchCourseWithLessons(courseId)
@@ -49,9 +56,14 @@ export default function CourseSidebar({ courseId }: Props) {
             <span className="text-gray-600 text-sm ml-2">(4.5/5)</span>
           </div>
         </div>
-        <button onClick={() => appRouter.push("/authenticate/register")} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition">
-          Đăng ký ngay
-        </button>
+        {!isLoggedIn && (
+          <button
+            onClick={() => router.push("/authenticate/register")}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
+          >
+            Đăng ký ngay
+          </button>
+        )}
         <ul className="mt-6 space-y-3 text-gray-700">
           <li className="flex items-center space-x-3">
             <i className="fas fa-clock text-blue-600"></i>

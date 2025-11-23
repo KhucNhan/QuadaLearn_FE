@@ -13,3 +13,11 @@ export async function getExamplesByDetailId(detailId: number) {
   if (!res.ok) throw new Error('Failed to fetch examples');
   return res.json();
 }
+
+
+export async function getKnowledgeByLessonId(lessonId: number) {
+  const res = await fetch(`${BASE_URL}/knowledge/by-lesson/${lessonId}`);
+  if (!res.ok) throw new Error('Failed to fetch knowledge by lessonId');
+  return res.json();
+}
+
