@@ -5,7 +5,8 @@ type TestSidebarProps = {
   onNavigate: (index: number) => void;
   answers: Record<number, string>;
   onSubmit: () => void;
-  isSubmitted: boolean; // Nhận props để biết đã submit chưa
+  isSubmitted: boolean;
+  questionIds: number[]; // ✅ Thêm prop này để nhận danh sách ID theo thứ tự đã tráo
 };
 
 export default function TestSidebar({
@@ -14,8 +15,9 @@ export default function TestSidebar({
   answers,
   onSubmit,
   isSubmitted,
+  questionIds, // ✅ Nhận questionIds
 }: TestSidebarProps) {
-  const [timeLeft, setTimeLeft] = useState(1 * 60); // X x minutes
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // X x minutes
 
   // Countdown - CHỈ chạy khi chưa submit
   useEffect(() => {
@@ -65,11 +67,12 @@ export default function TestSidebar({
       <div className="mb-6">
         <p className="text-lg font-semibold mb-3">Các câu hỏi</p>
         <div className="grid grid-cols-5 gap-2">
-          {Array.from({ length: totalQuestions }, (_, i) => {
-            const isAnswered = answers[i + 1];
+          {questionIds.map((questionId, i) => {
+            // ✅ Dùng questionId thực tế thay vì i + 1
+            const isAnswered = answers[questionId];
             return (
               <button
-                key={i}
+                key={questionId}
                 onClick={() => onNavigate(i)}
                 className={`w-10 h-10 rounded-full ${
                   isAnswered

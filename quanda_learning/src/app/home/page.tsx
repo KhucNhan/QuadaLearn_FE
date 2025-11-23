@@ -13,13 +13,15 @@ import TopicLessons from "@/components/skill/TopicLessons";
 import EnglishGrammarGuide from "@/components/skill/grammar/Knowledge";
 import ReadComprehension from "@/components/skill/read/ReadComprehension";
 import ReadingDetail from "@/components/skill/read/ReadingModal";
+import TenseDetail from "@/components/skill/tense/TenseDetail"; // ✅ Đảm bảo import này
 
 export default function HomePage() {
   const [activeSection, setActiveSection] = useState<string>("home");
   const [selectedCourseLevel, setSelectedCourseLevel] = useState<string | null>(null);
   const [selectedTopicId, setSelectedTopicId] = useState<number | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null);
-  const [selectedPassage, setSelectedPassage] = useState<any | null>(null); 
+  const [selectedPassage, setSelectedPassage] = useState<any | null>(null);
+  const [selectedTense, setSelectedTense] = useState<number | null>(null); // ✅ Thêm state
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -35,6 +37,7 @@ export default function HomePage() {
           <Sidebar
             setActiveSection={setActiveSection}
             setSelectedCourseLevel={setSelectedCourseLevel}
+            setSelectedTense={setSelectedTense} // ✅ Thêm prop này
           />
         </div>
 
@@ -63,8 +66,7 @@ export default function HomePage() {
             </>
           }
 
-
-           {activeSection === "reading" && (
+          {activeSection === "reading" && (
             <>
               {selectedPassage ? (
                 <ReadingDetail
@@ -94,6 +96,14 @@ export default function HomePage() {
               ) : (
                 <GrammarTopics onSelectTopic={setSelectedTopicId} />
               )}
+              <Footer />
+            </>
+          )}
+
+          {/* ✅ Thêm phần hiển thị TenseDetail */}
+          {activeSection === "tense-detail" && selectedTense && (
+            <>
+              <TenseDetail tenseId={selectedTense} />
               <Footer />
             </>
           )}
