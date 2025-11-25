@@ -13,6 +13,8 @@ import TopicLessons from "@/components/skill/TopicLessons";
 import EnglishGrammarGuide from "@/components/skill/grammar/Knowledge";
 import ReadComprehension from "@/components/skill/read/ReadComprehension";
 import ReadingDetail from "@/components/skill/read/ReadingModal";
+import { Course } from "@/lib/courses/AllCoursesAPI";
+import CourseDetail from "../../components/course/CourseDetail";
 import TenseDetail from "@/components/skill/tense/TenseDetail"; // ✅ Đảm bảo import này
 
 export default function HomePage() {
@@ -21,8 +23,8 @@ export default function HomePage() {
   const [selectedTopicId, setSelectedTopicId] = useState<number | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null);
   const [selectedPassage, setSelectedPassage] = useState<any | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [selectedTense, setSelectedTense] = useState<number | null>(null); // ✅ Thêm state
-
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -46,11 +48,25 @@ export default function HomePage() {
 
           {activeSection === "home" && (
             <>
-              <HeroSection />
-              <HighlightedCourses />
-              <Footer />
+              {selectedCourse ? (
+                <>
+                  <CourseDetail
+                    course={selectedCourse}
+                    onBack={() => setSelectedCourse(null)}
+                  />
+                  <Footer />
+                </>
+              ) : (
+                <>
+                  <HeroSection />
+                  <HighlightedCourses onSelectCourse={setSelectedCourse} />
+                  <Footer />
+                </>
+              )}
             </>
           )}
+
+
 
           {activeSection === "course-levels" && selectedCourseLevel && (
             <>

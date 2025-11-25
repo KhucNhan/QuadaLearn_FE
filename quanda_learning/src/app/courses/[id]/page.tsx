@@ -9,7 +9,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 interface PageProps {
-  params: Promise<{ id: string }>; // ✅ vì params bây giờ là Promise
+  params: Promise<{ id: string }>; 
 }
 
 export default function CourseDetailPage({ params }: PageProps) {
