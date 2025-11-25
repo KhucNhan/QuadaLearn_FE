@@ -15,10 +15,7 @@ import ReadComprehension from "@/components/skill/read/ReadComprehension";
 import ReadingDetail from "@/components/skill/read/ReadingModal";
 import { Course } from "@/lib/courses/AllCoursesAPI";
 import CourseDetail from "../../components/course/CourseDetail";
-
-
-
-
+import TenseDetail from "@/components/skill/tense/TenseDetail"; // ✅ Đảm bảo import này
 
 export default function HomePage() {
   const [activeSection, setActiveSection] = useState<string>("home");
@@ -27,7 +24,7 @@ export default function HomePage() {
   const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null);
   const [selectedPassage, setSelectedPassage] = useState<any | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-
+  const [selectedTense, setSelectedTense] = useState<number | null>(null); // ✅ Thêm state
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -42,6 +39,7 @@ export default function HomePage() {
           <Sidebar
             setActiveSection={setActiveSection}
             setSelectedCourseLevel={setSelectedCourseLevel}
+            setSelectedTense={setSelectedTense} // ✅ Thêm prop này
           />
         </div>
 
@@ -53,7 +51,7 @@ export default function HomePage() {
               {selectedCourse ? (
                 <>
                   <CourseDetail
-                    course = {selectedCourse}
+                    course={selectedCourse}
                     onBack={() => setSelectedCourse(null)}
                   />
                   <Footer />
@@ -69,6 +67,7 @@ export default function HomePage() {
           )}
 
 
+
           {activeSection === "course-levels" && selectedCourseLevel && (
             <>
               <CoursesByLevel level={selectedCourseLevel} />
@@ -82,7 +81,6 @@ export default function HomePage() {
               <Footer />
             </>
           }
-
 
           {activeSection === "reading" && (
             <>
@@ -114,6 +112,14 @@ export default function HomePage() {
               ) : (
                 <GrammarTopics onSelectTopic={setSelectedTopicId} />
               )}
+              <Footer />
+            </>
+          )}
+
+          {/* ✅ Thêm phần hiển thị TenseDetail */}
+          {activeSection === "tense-detail" && selectedTense && (
+            <>
+              <TenseDetail tenseId={selectedTense} />
               <Footer />
             </>
           )}

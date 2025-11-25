@@ -5,6 +5,8 @@ type TestSidebarProps = {
   onNavigate: (index: number) => void;
   answers: Record<number, string>;
   onSubmit: () => void;
+  isSubmitted: boolean;
+  questionIds: number[]; // ✅ Thêm prop này để nhận danh sách ID theo thứ tự đã tráo
 };
 
 export default function TestSidebar({
@@ -12,28 +14,31 @@ export default function TestSidebar({
   onNavigate,
   answers,
   onSubmit,
+  isSubmitted,
+  questionIds, // ✅ Nhận questionIds
 }: TestSidebarProps) {
-  const [timeLeft, setTimeLeft] = useState(1* 60); // 1 giờ
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // X x minutes
 
-  // Countdown
+  // Countdown - CHỈ chạy khi chưa submit
   useEffect(() => {
+    if (isSubmitted) return; // Dừng timer nếu đã submit
+
     const timer = setInterval(() => {
       setTimeLeft((prev) => Math.max(prev - 1, 0));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isSubmitted]);
 
-  // Khi hết giờ thì auto submit (chỉ chạy 1 lần)
+  // Khi hết giờ thì auto submit - CHỈ khi chưa submit
   useEffect(() => {
-    if (timeLeft === 0) {
-      // delay 1 tick để tránh conflict render
+    if (timeLeft === 0 && !isSubmitted) {
       const t = setTimeout(() => {
         onSubmit();
       }, 0);
       return () => clearTimeout(t);
     }
-  }, [timeLeft, onSubmit]);
+  }, [timeLeft, onSubmit, isSubmitted]);
 
   // format hh:mm:ss
   const formatTime = (seconds: number) => {
@@ -50,18 +55,24 @@ export default function TestSidebar({
       {/* Timer */}
       <div className="text-center mb-6">
         <p className="text-lg font-semibold">Thời gian còn lại</p>
-        <p className="text-2xl font-bold text-red-600">{formatTime(timeLeft)}</p>
+        <p className={`text-2xl font-bold ${isSubmitted ? 'text-gray-400' : 'text-red-600'}`}>
+          {formatTime(timeLeft)}
+        </p>
+        {isSubmitted && (
+          <p className="text-sm text-gray-500 mt-1">Đã nộp bài</p>
+        )}
       </div>
 
       {/* Question navigation */}
       <div className="mb-6">
         <p className="text-lg font-semibold mb-3">Các câu hỏi</p>
         <div className="grid grid-cols-5 gap-2">
-          {Array.from({ length: totalQuestions }, (_, i) => {
-            const isAnswered = answers[i + 1];
+          {questionIds.map((questionId, i) => {
+            // ✅ Dùng questionId thực tế thay vì i + 1
+            const isAnswered = answers[questionId];
             return (
               <button
-                key={i}
+                key={questionId}
                 onClick={() => onNavigate(i)}
                 className={`w-10 h-10 rounded-full ${
                   isAnswered
@@ -79,9 +90,14 @@ export default function TestSidebar({
       {/* Submit button */}
       <button
         onClick={onSubmit}
-        className="mt-auto w-full py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700"
+        disabled={isSubmitted}
+        className={`mt-auto w-full py-3 rounded-lg font-semibold ${
+          isSubmitted
+            ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+            : "bg-indigo-600 text-white hover:bg-indigo-700"
+        }`}
       >
-        Nộp bài
+        {isSubmitted ? "Đã nộp bài" : "Nộp bài"}
       </button>
     </aside>
   );
