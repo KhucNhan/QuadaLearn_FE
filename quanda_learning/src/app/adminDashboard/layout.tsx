@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
-import Layout from "@/components/admin/Layout";
+import Layout from "@/components/admin/userManagement/Layout";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<"light" | "dark">("light");

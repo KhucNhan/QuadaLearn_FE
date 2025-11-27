@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { userApi } from "@/lib/admin/userApi";
-import UserTable from "@/components/admin/Table";
-import UserFormDialog from "@/components/admin/FormDialog";
-import UserConfirmDialog from "@/components/admin/ConfirmDeleteDialog";
-import UserTableHeader from "@/components/admin/TableHeader";
+import UserTable from "@/components/admin/userManagement/Table";
+import UserFormDialog from "@/components/admin/userManagement/FormDialog";
+import UserConfirmDialog from "@/components/admin/userManagement/ConfirmDeleteDialog";
+import UserTableHeader from "@/components/admin/userManagement/TableHeader";
 import type { User } from "@/lib/types/users";
 
 import {
