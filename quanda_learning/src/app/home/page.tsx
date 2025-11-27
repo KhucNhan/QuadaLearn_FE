@@ -15,7 +15,10 @@ import ReadComprehension from "@/components/skill/read/ReadComprehension";
 import ReadingDetail from "@/components/skill/read/ReadingModal";
 import { Course } from "@/lib/courses/AllCoursesAPI";
 import CourseDetail from "../../components/course/CourseDetail";
-import TenseDetail from "@/components/skill/tense/TenseDetail"; // ✅ Đảm bảo import này
+import TenseDetail from "@/components/skill/tense/TenseDetail"; 
+import AlphabetBasic from "../../components/alphabet/AlphabetBasic";
+import AlphabetIPA from "../../components/alphabet/AlphabetAPI";
+
 
 export default function HomePage() {
   const [activeSection, setActiveSection] = useState<string>("home");
@@ -25,6 +28,8 @@ export default function HomePage() {
   const [selectedPassage, setSelectedPassage] = useState<any | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [selectedTense, setSelectedTense] = useState<number | null>(null); // ✅ Thêm state
+
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -67,10 +72,24 @@ export default function HomePage() {
           )}
 
 
+          {activeSection === "alphabet" && (
+            <>
+              <AlphabetBasic />
+              <Footer />
+            </>
+          )}
+
 
           {activeSection === "course-levels" && selectedCourseLevel && (
             <>
-              <CoursesByLevel level={selectedCourseLevel} />
+              {selectedCourse ? (
+                <CourseDetail course={selectedCourse} onBack={() => setSelectedCourse(null)} />
+              ) : (
+                <CoursesByLevel
+                  level={selectedCourseLevel}
+                  onSelectCourse={setSelectedCourse} // 👈 truyền callback
+                />
+              )}
               <Footer />
             </>
           )}
@@ -92,6 +111,13 @@ export default function HomePage() {
               ) : (
                 <ReadComprehension onSelectPassage={setSelectedPassage} />
               )}
+              <Footer />
+            </>
+          )}
+
+          {activeSection === "ipa" && (
+            <>
+              <AlphabetIPA />
               <Footer />
             </>
           )}
