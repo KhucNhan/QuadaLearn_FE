@@ -6,7 +6,8 @@ type TestSidebarProps = {
   answers: Record<number, string>;
   onSubmit: () => void;
   isSubmitted: boolean;
-  questionIds: number[]; // ✅ Thêm prop này để nhận danh sách ID theo thứ tự đã tráo
+  questionIds: number[];
+  onTimeChange?: (timeLeft: number) => void; // ✅ Callback để truyền thời gian lên parent
 };
 
 export default function TestSidebar({
@@ -15,22 +16,27 @@ export default function TestSidebar({
   answers,
   onSubmit,
   isSubmitted,
-  questionIds, // ✅ Nhận questionIds
+  questionIds,
+  onTimeChange,
 }: TestSidebarProps) {
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // X x minutes
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes
 
   // Countdown - CHỈ chạy khi chưa submit
   useEffect(() => {
-    if (isSubmitted) return; // Dừng timer nếu đã submit
+    if (isSubmitted) return;
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => Math.max(prev - 1, 0));
+      setTimeLeft((prev) => {
+        const newTime = Math.max(prev - 1, 0);
+        onTimeChange?.(newTime); // ✅ Gửi thời gian lên parent
+        return newTime;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isSubmitted]);
+  }, [isSubmitted, onTimeChange]);
 
-  // Khi hết giờ thì auto submit - CHỈ khi chưa submit
+  // Khi hết giờ thì auto submit
   useEffect(() => {
     if (timeLeft === 0 && !isSubmitted) {
       const t = setTimeout(() => {
@@ -40,7 +46,6 @@ export default function TestSidebar({
     }
   }, [timeLeft, onSubmit, isSubmitted]);
 
-  // format hh:mm:ss
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -68,7 +73,6 @@ export default function TestSidebar({
         <p className="text-lg font-semibold mb-3">Các câu hỏi</p>
         <div className="grid grid-cols-5 gap-2">
           {questionIds.map((questionId, i) => {
-            // ✅ Dùng questionId thực tế thay vì i + 1
             const isAnswered = answers[questionId];
             return (
               <button

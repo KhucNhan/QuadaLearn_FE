@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import React, { useRef } from "react";
 import LoadingAnalyze from "../LoadingAnalyze";
+import { fetchWithAuth } from "@/utils/api";
 
 interface Question {
   id: number;
@@ -17,6 +18,7 @@ interface Question {
 interface TestSubmissionRequest {
   aim: string;
   answers: { questionId: number; answer: string | null }[];
+  timeSpent: number;
 }
 
 export default function TestPage({ testId }: { testId: number }) {
@@ -28,6 +30,7 @@ export default function TestPage({ testId }: { testId: number }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [feedbackReady, setFeedbackReady] = useState(false); // Track khi feedback đã sẵn sàng
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // nhận thời gian từ sidebar
 
   const searchParams = useSearchParams();
   const level = searchParams.get("level") || "unknown";
@@ -77,9 +80,37 @@ export default function TestPage({ testId }: { testId: number }) {
   const handleSubmit = async () => {
   if (isSubmitted) return;
   
+  // ✅ Đếm số câu chưa làm
+  const answeredCount = Object.keys(answers).length;
+  const unansweredCount = questions.length - answeredCount;
+  
+  // ✅ Check điều kiện cần confirm
+  let shouldConfirm = false;
+  let confirmMessage = "";
+  
+  if (unansweredCount > 5 && timeLeft > 1800) {
+    shouldConfirm = true;
+    confirmMessage = `⚠️ BẠN CÒN:\n\n• ${unansweredCount} câu chưa làm\n• ${Math.floor(timeLeft / 60)} phút thời gian\n\nBạn có chắc chắn muốn nộp bài không?`;
+  } else if (unansweredCount > 5) {
+    shouldConfirm = true;
+    confirmMessage = `⚠️ Bạn còn ${unansweredCount} câu chưa làm!\n\nBạn có chắc chắn muốn nộp bài không?`;
+  } else if (timeLeft > 1800) {
+    shouldConfirm = true;
+    confirmMessage = `⏰ Bạn còn ${Math.floor(timeLeft / 60)} phút!\n\nBạn có chắc chắn muốn nộp bài không?`;
+  }
+  
+  if (shouldConfirm && !window.confirm(confirmMessage)) {
+    return;
+  }
+
+  const testStartTime = Date.now() - ((60 * 60 - timeLeft) * 1000);
+  
   setIsSubmitted(true);
   setShowLoading(true);
   setFeedbackReady(false);
+  
+  // ✅ Tính thời gian đã làm bài
+  const timeSpentSeconds = Math.floor((Date.now() - testStartTime) / 1000);
   
   const payload: TestSubmissionRequest = {
     aim: level,
@@ -87,23 +118,22 @@ export default function TestPage({ testId }: { testId: number }) {
       questionId: q.id,
       answer: answers[q.id] || null,
     })),
+    timeSpent: timeSpentSeconds, // ✅ Gửi timeSpent
   };
 
   console.log("📤 Submitting payload:", payload);
+  console.log("User:", localStorage.getItem("user"));
 
   try {
     setSubmitting(true);
-    const res = await fetch(`http://localhost:8888/tests/${testId}/submit`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const res = await fetchWithAuth(`/tests/${testId}/submit`, {
+  method: "POST",
+  body: JSON.stringify(payload),
+});
 
-    // ✅ Log thêm thông tin response
     console.log("📊 Response status:", res.status);
     console.log("📊 Response ok:", res.ok);
     
-    // ✅ Lấy error message từ backend nếu có
     if (!res.ok) {
       const errorData = await res.json().catch(() => null);
       console.error("❌ Error response:", errorData);
@@ -113,7 +143,6 @@ export default function TestPage({ testId }: { testId: number }) {
     const jsonData = await res.json();
     console.log("📥 Feedback received:", jsonData);
 
-    // Set feedback data và đánh dấu đã sẵn sàng
     setFeedback(jsonData.scoreAnalysis);
     setFeedbackReady(true);
 
@@ -123,7 +152,6 @@ export default function TestPage({ testId }: { testId: number }) {
     setShowLoading(false);
     setFeedbackReady(false);
     
-    // ✅ Hiển thị error message cụ thể hơn
     alert(`Có lỗi xảy ra khi nộp bài:\n${err instanceof Error ? err.message : 'Unknown error'}\n\nVui lòng thử lại!`);
   } finally {
     setSubmitting(false);
