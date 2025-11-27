@@ -1,7 +1,7 @@
 import React, { useState, ReactNode } from "react";
 import { Box } from "@mui/material";
-import Header from "@/components/admin/Header";
-import Sidebar from "@/components/admin/Sidebar";
+import Header from "@/components/admin/userManagement/Header";
+import Sidebar from "@/components/admin/userManagement/Sidebar";
 import { useRouter } from "next/navigation";
 
 interface LayoutProps {

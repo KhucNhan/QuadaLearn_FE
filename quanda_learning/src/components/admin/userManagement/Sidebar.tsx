@@ -15,16 +15,34 @@ import {
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import LogoutIcon from "@mui/icons-material/Logout";
+import SchoolIcon from "@mui/icons-material/School";
+
+import { useRouter } from "next/navigation"; // 👈 BẮT BUỘC
 
 interface SidebarProps {
   open: boolean;
-  onLogout: () => void; // hàm logout truyền từ cha
+  onLogout: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ open, onLogout }) => {
+  const router = useRouter(); // 👈 KHAI BÁO ROUTER
+
   const menuItems = [
-    { text: "Dashboard", icon: <DashboardIcon />, onClick: () => {} },
-    { text: "Users", icon: <PeopleIcon />, onClick: () => {} },
+    {
+      text: "Dashboard",
+      icon: <DashboardIcon />,
+      onClick: () => router.push("/adminDashboard/adminPage"),
+    },
+    {
+      text: "Users",
+      icon: <PeopleIcon />,
+      onClick: () => router.push("/adminDashboard/adminPage"),
+    },
+    {
+      text: "Courses",
+      icon: <SchoolIcon />,
+      onClick: () => router.push("/adminDashboard/coursePage"),
+    },
   ];
 
   return (
@@ -42,7 +60,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onLogout }) => {
     >
       <List>
         {menuItems.map((item) => (
-          <Tooltip key={item.text} title={!open ? item.text : ""} placement="right">
+          <Tooltip
+            key={item.text}
+            title={!open ? item.text : ""}
+            placement="right"
+          >
             <ListItem disablePadding>
               <ListItemButton onClick={item.onClick}>
                 <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>
@@ -57,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onLogout }) => {
 
       <Divider />
 
-      {/* Nút đăng xuất */}
+      {/* Logout */}
       <Tooltip title={!open ? "Đăng xuất" : ""} placement="right">
         <ListItem disablePadding>
           <ListItemButton onClick={onLogout}>
