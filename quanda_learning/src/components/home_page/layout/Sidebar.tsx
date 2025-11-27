@@ -9,12 +9,14 @@ interface SidebarProps {
   setActiveSection: (section: string) => void;
   setSelectedCourseLevel: (level: string | null) => void;
   setSelectedTense: (tenseId: number) => void; // Thêm prop để set thì được chọn
+  setSelectedHistoryId: (historyId: number | null) => void; // Thêm prop để set lịch sử được chọn
 }
 
 export default function Sidebar({
   setActiveSection,
   setSelectedCourseLevel,
   setSelectedTense,
+  setSelectedHistoryId,
 }: SidebarProps) {
   const [openCourse, setOpenCourse] = useState(false);
   const [openSkills, setOpenSkills] = useState(false);
@@ -43,8 +45,6 @@ export default function Sidebar({
 
   return (
     <aside className="pt-[41px] w-64 h-screen fixed top-16 left-0 bg-gradient-to-b from-blue-600 via-green-500 to-teal-400 shadow-2xl border-r border-white/20 text-white z-40">
-      
-
       <nav className="p-4 space-y-2 overflow-y-auto h-[calc(100%-4rem)] text-sm font-medium">
         <div>
           {/* Khóa học - Dropdown chính */}
@@ -108,7 +108,9 @@ export default function Sidebar({
                 >
                   <span>• Trung cấp</span>
                   <i
-                    className={`fas fa-chevron-${openIntermediate ? "down" : "right"}`}
+                    className={`fas fa-chevron-${
+                      openIntermediate ? "down" : "right"
+                    }`}
                   ></i>
                 </button>
                 {openIntermediate && (
@@ -145,7 +147,9 @@ export default function Sidebar({
                 >
                   <span>• Nâng cao</span>
                   <i
-                    className={`fas fa-chevron-${openAdvanced ? "down" : "right"}`}
+                    className={`fas fa-chevron-${
+                      openAdvanced ? "down" : "right"
+                    }`}
                   ></i>
                 </button>
                 {openAdvanced && (
@@ -186,7 +190,9 @@ export default function Sidebar({
             <i className="fas fa-brain w-5"></i>
             <span>Kiến thức</span>
             <i
-              className={`fas fa-chevron-${openSkills ? "down" : "right"} ml-auto`}
+              className={`fas fa-chevron-${
+                openSkills ? "down" : "right"
+              } ml-auto`}
             ></i>
           </button>
 
@@ -257,13 +263,16 @@ export default function Sidebar({
         </Link>
 
         {/* Lịch sử học tập */}
-        <a
-          href="#history"
+        <button
+          onClick={() => {
+            setSelectedHistoryId(null); // reset detail
+            setActiveSection("test-history");
+          }}
           className="text-lg flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-yellow-400 hover:text-indigo-900 transition-all"
         >
           <i className="fas fa-history w-5"></i>
           <span>Lịch sử học tập</span>
-        </a>
+        </button>
       </nav>
     </aside>
   );

@@ -1,5 +1,3 @@
-
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { fetchCourses, Course } from "@/lib/courses/AllCoursesAPI";
@@ -37,7 +35,13 @@ const AllCourses: React.FC<AllCoursesProps> = ({ onSelectCourse }) => {
         {courses.map((course) => (
           <div className="course-card" key={course.id}>
             <img
-              src={course.image}
+              src={
+                course.image
+                  ? course.image.startsWith("http")
+                    ? course.image
+                    : `http://localhost:8888${course.image}` // ✅ prefix localhost:8888 nếu là path từ DB
+                  : "https://via.placeholder.com/400x200?text=No+Image"
+              }
               alt={course.name}
               className="course-image"
               onError={(e) =>
