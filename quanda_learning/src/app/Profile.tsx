@@ -32,7 +32,7 @@ export function ProfileModal({ isOpen, onClose, userId }: ProfileModalProps) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isNameConfirmed, setIsNameConfirmed] = useState(true)
-
+  const [nameError, setNameError] = useState<string | null>(null)
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     name: "",
@@ -91,10 +91,16 @@ export function ProfileModal({ isOpen, onClose, userId }: ProfileModalProps) {
 
   // 🧠 Chỉ cập nhật tạm local, không gọi API
   const handleNameSave = () => {
+    if (!tempName.trim()) {
+      setNameError("Tên không được để trống")
+      return
+    }
+    setNameError(null)
     setEditInfo((prev) => ({ ...prev, name: tempName }))
     setIsEditingName(false)
     setIsNameConfirmed(true)
   }
+
   const handleNameCancel = () => {
     setTempName(editInfo.name)
     setIsEditingName(false)
@@ -311,11 +317,19 @@ export function ProfileModal({ isOpen, onClose, userId }: ProfileModalProps) {
                     <div className="flex items-center gap-2">
                       <Input
                         value={tempName}
-                        onChange={(e) => setTempName(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          setTempName(value)
+                          setNameError(value.trim() === "" ? "Tên không được để trống" : null)
+                        }}
                         onKeyDown={handleNameKeyPress}
                         className="bg-slate-800/50 border-purple-500/50 text-white focus:border-purple-400 focus:ring-purple-400/20 text-xl font-semibold h-8 px-2"
                         autoFocus
                       />
+                      {nameError && (
+                        <p className="text-red-400 text-sm mt-1">{nameError}</p>
+                      )}
+
                       <button
                         onClick={() => {
                           handleNameSave()
@@ -355,7 +369,7 @@ export function ProfileModal({ isOpen, onClose, userId }: ProfileModalProps) {
                   Chỉnh sửa thông tin:
                 </h3>
 
-    
+
                 {!editInfo.gender && (
                   <p className="text-red-400 text-sm ml-4">
                     ⚠️ Vui lòng chọn giới tính
@@ -412,14 +426,15 @@ export function ProfileModal({ isOpen, onClose, userId }: ProfileModalProps) {
                 </Button>
                 <Button
                   onClick={handleSave}
-                  disabled={saving || !isNameConfirmed || !editInfo.gender} // 🧠 Disable nếu chưa chọn giới tính
-                  className={`flex-1 transition-opacity ${!isNameConfirmed || !editInfo.gender
+                  disabled={saving || !isNameConfirmed || !editInfo.gender || !!nameError}
+                  className={`flex-1 transition-opacity ${!isNameConfirmed || !editInfo.gender || nameError
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                     }`}
                 >
                   {saving ? "Đang lưu..." : "Cập nhật"}
                 </Button>
+
 
               </div>
 
