@@ -80,7 +80,7 @@ export default function Sidebar({
                       href="#"
                       onClick={() => {
                         setActiveSection("course-levels");
-                        setSelectedCourseLevel("A1");
+                        setSelectedCourseLevel("Beginner");
                       }}
                       className="block hover:text-yellow-300"
                     >
@@ -90,7 +90,7 @@ export default function Sidebar({
                       href="#"
                       onClick={() => {
                         setActiveSection("course-levels");
-                        setSelectedCourseLevel("A2");
+                        setSelectedCourseLevel("Elementary");
                       }}
                       className="block hover:text-yellow-300"
                     >
@@ -119,7 +119,7 @@ export default function Sidebar({
                       href="#"
                       onClick={() => {
                         setActiveSection("course-levels");
-                        setSelectedCourseLevel("B1");
+                        setSelectedCourseLevel("Intermediate");
                       }}
                       className="block hover:text-yellow-300"
                     >
@@ -129,7 +129,7 @@ export default function Sidebar({
                       href="#"
                       onClick={() => {
                         setActiveSection("course-levels");
-                        setSelectedCourseLevel("B2");
+                        setSelectedCourseLevel("Upper-Intermediate");
                       }}
                       className="block hover:text-yellow-300"
                     >
@@ -158,7 +158,7 @@ export default function Sidebar({
                       href="#"
                       onClick={() => {
                         setActiveSection("course-levels");
-                        setSelectedCourseLevel("C1");
+                        setSelectedCourseLevel("Advanced");
                       }}
                       className="block hover:text-yellow-300"
                     >
@@ -168,7 +168,7 @@ export default function Sidebar({
                       href="#"
                       onClick={() => {
                         setActiveSection("course-levels");
-                        setSelectedCourseLevel("C2");
+                        setSelectedCourseLevel("Proficient");
                       }}
                       className="block hover:text-yellow-300"
                     >

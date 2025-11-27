@@ -157,8 +157,15 @@ export default function Header({ setActiveSection }: HeaderProps) {
       >
         Trang chủ
       </button>
-      <button onClick={() => router.push('/my-courses')} className="hover:text-yellow-300 transition-colors duration-300">Khóa học</button>
-      <button onClick={() => router.push('/notifications')} className="hover:text-yellow-300 transition-colors duration-300">Luyện tập</button>
+      <button onClick={() => setActiveSection("alphabet")} className="hover:text-yellow-300 transition-colors duration-300">
+  Bảng chữ cái
+</button>
+      <button
+    onClick={() => setActiveSection("ipa")} // ✅ Đây là phần mới
+    className="hover:text-yellow-300 transition-colors duration-300"
+  >
+    Bảng phiên âm
+  </button>
       <button onClick={() => router.push('/notifications')} className="hover:text-yellow-300 transition-colors duration-300">Thông báo</button>
     </nav>
   );
@@ -173,8 +180,8 @@ export default function Header({ setActiveSection }: HeaderProps) {
   ) : (
     <>
       <a onClick={() => router.push('/dashboard')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Trang chủ</a>
-      <a onClick={() => router.push('/my-courses')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Khóa học</a>
-      <a onClick={() => router.push('/notifications')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Luyện tập</a>
+      <a onClick={() => router.push('/my-courses')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Bảng chữ cái</a>
+      <a onClick={() => router.push('/notifications')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Bảng phiên âm</a>
       <a onClick={() => router.push('/notifications')} className="block px-6 py-3 hover:bg-white/20 text-white font-semibold">Thông báo</a>
     </>
   );

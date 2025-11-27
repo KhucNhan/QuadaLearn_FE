@@ -4,7 +4,7 @@ import { fetchCourses, Course } from "@/lib/courses/AllCoursesAPI";
 import "../../../styles/button/ButtonCourses.css";
 
 interface AllCoursesProps {
-  onSelectCourse: (course: Course) => void; // ✅ callback để báo cho HomePage biết
+  onSelectCourse: (course: Course) => void; 
 }
 
 const AllCourses: React.FC<AllCoursesProps> = ({ onSelectCourse }) => {
@@ -56,7 +56,7 @@ const AllCourses: React.FC<AllCoursesProps> = ({ onSelectCourse }) => {
             <div className="course-footer">
               <button
                 className="course-button"
-                onClick={() => onSelectCourse(course)} // ✅ Gọi callback
+                onClick={() => onSelectCourse(course)}
               >
                 Khám phá
               </button>
