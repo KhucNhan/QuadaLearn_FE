@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 type TestSidebarProps = {
   totalQuestions: number;
@@ -7,7 +7,7 @@ type TestSidebarProps = {
   onSubmit: () => void;
   isSubmitted: boolean;
   questionIds: number[];
-  onTimeChange?: (timeLeft: number) => void; // ✅ Callback để truyền thời gian lên parent
+  timeLeft: number; // ✅ Nhận timeLeft từ parent
 };
 
 export default function TestSidebar({
@@ -17,35 +17,8 @@ export default function TestSidebar({
   onSubmit,
   isSubmitted,
   questionIds,
-  onTimeChange,
+  timeLeft,
 }: TestSidebarProps) {
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes
-
-  // Countdown - CHỈ chạy khi chưa submit
-  useEffect(() => {
-    if (isSubmitted) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        const newTime = Math.max(prev - 1, 0);
-        onTimeChange?.(newTime); // ✅ Gửi thời gian lên parent
-        return newTime;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isSubmitted, onTimeChange]);
-
-  // Khi hết giờ thì auto submit
-  useEffect(() => {
-    if (timeLeft === 0 && !isSubmitted) {
-      const t = setTimeout(() => {
-        onSubmit();
-      }, 0);
-      return () => clearTimeout(t);
-    }
-  }, [timeLeft, onSubmit, isSubmitted]);
-
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -60,7 +33,11 @@ export default function TestSidebar({
       {/* Timer */}
       <div className="text-center mb-6">
         <p className="text-lg font-semibold">Thời gian còn lại</p>
-        <p className={`text-2xl font-bold ${isSubmitted ? 'text-gray-400' : 'text-red-600'}`}>
+        <p
+          className={`text-2xl font-bold ${
+            isSubmitted ? "text-gray-400" : "text-red-600"
+          }`}
+        >
           {formatTime(timeLeft)}
         </p>
         {isSubmitted && (
@@ -78,7 +55,7 @@ export default function TestSidebar({
               <button
                 key={questionId}
                 onClick={() => onNavigate(i)}
-                className={`w-10 h-10 rounded-full ${
+                className={`w-10 h-10 rounded-full transition-colors ${
                   isAnswered
                     ? "bg-green-500 text-white"
                     : "bg-gray-200 hover:bg-indigo-500 hover:text-white"
@@ -95,7 +72,7 @@ export default function TestSidebar({
       <button
         onClick={onSubmit}
         disabled={isSubmitted}
-        className={`mt-auto w-full py-3 rounded-lg font-semibold ${
+        className={`mt-auto w-full py-3 rounded-lg font-semibold transition-colors ${
           isSubmitted
             ? "bg-gray-400 text-gray-200 cursor-not-allowed"
             : "bg-indigo-600 text-white hover:bg-indigo-700"
