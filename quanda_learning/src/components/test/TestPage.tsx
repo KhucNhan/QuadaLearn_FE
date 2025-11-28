@@ -13,6 +13,7 @@ interface Question {
   content: string;
   options: string[];
   answerKey?: string;
+  correctOption?: string | null;
 }
 
 interface TestSubmissionRequest {
@@ -29,13 +30,34 @@ export default function TestPage({ testId }: { testId: number }) {
   const [submitting, setSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-  const [feedbackReady, setFeedbackReady] = useState(false); // Track khi feedback đã sẵn sàng
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // nhận thời gian từ sidebar
+  const [feedbackReady, setFeedbackReady] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(60 * 60);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
 
   const searchParams = useSearchParams();
   const level = searchParams.get("level") || "unknown";
   const feedbackRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+
+  // ✅ Quản lý timer ở parent
+  useEffect(() => {
+    if (isSubmitted) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => Math.max(prev - 1, 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isSubmitted]);
+
+  // ✅ Auto submit khi hết giờ
+  useEffect(() => {
+    if (timeLeft === 0 && !isSubmitted && !submitting) {
+      console.log("⏰ Time's up! Auto submitting...");
+      performSubmit();
+    }
+  }, [timeLeft, isSubmitted, submitting]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -47,15 +69,29 @@ export default function TestPage({ testId }: { testId: number }) {
 
         const data: Question[] = await res.json();
         console.log("✅ Fetched questions:", data);
-        
-        // Tráo thứ tự câu hỏi và tráo thứ tự options
+
         const shuffledQuestions = data
-          .sort(() => Math.random() - 0.5) // Tráo câu hỏi
-          .map((q) => ({
-            ...q,
-            options: [...q.options].sort(() => Math.random() - 0.5), // Tráo options
-          }));
-        
+          .sort(() => Math.random() - 0.5)
+          .map((q) => {
+            const originalOptions = q.options;
+            const correctIndex = q.answerKey
+              ? q.answerKey.charCodeAt(0) - 65
+              : -1;
+
+            const correctOption =
+              correctIndex >= 0 ? originalOptions[correctIndex] : null;
+
+            const shuffledOptions = [...originalOptions].sort(
+              () => Math.random() - 0.5
+            );
+
+            return {
+              ...q,
+              options: shuffledOptions,
+              correctOption, // <-- thêm thuộc tính mới
+            };
+          });
+
         setQuestions(shuffledQuestions);
       } catch (err) {
         console.error("❌ Error fetching questions:", err);
@@ -77,89 +113,118 @@ export default function TestPage({ testId }: { testId: number }) {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const handleSubmit = async () => {
-  if (isSubmitted) return;
-  
-  // ✅ Đếm số câu chưa làm
-  const answeredCount = Object.keys(answers).length;
-  const unansweredCount = questions.length - answeredCount;
-  
-  // ✅ Check điều kiện cần confirm
-  let shouldConfirm = false;
-  let confirmMessage = "";
-  
-  if (unansweredCount > 5 && timeLeft > 1800) {
-    shouldConfirm = true;
-    confirmMessage = `⚠️ BẠN CÒN:\n\n• ${unansweredCount} câu chưa làm\n• ${Math.floor(timeLeft / 60)} phút thời gian\n\nBạn có chắc chắn muốn nộp bài không?`;
-  } else if (unansweredCount > 5) {
-    shouldConfirm = true;
-    confirmMessage = `⚠️ Bạn còn ${unansweredCount} câu chưa làm!\n\nBạn có chắc chắn muốn nộp bài không?`;
-  } else if (timeLeft > 1800) {
-    shouldConfirm = true;
-    confirmMessage = `⏰ Bạn còn ${Math.floor(timeLeft / 60)} phút!\n\nBạn có chắc chắn muốn nộp bài không?`;
-  }
-  
-  if (shouldConfirm && !window.confirm(confirmMessage)) {
-    return;
-  }
-
-  const testStartTime = Date.now() - ((60 * 60 - timeLeft) * 1000);
-  
-  setIsSubmitted(true);
-  setShowLoading(true);
-  setFeedbackReady(false);
-  
-  // ✅ Tính thời gian đã làm bài
-  const timeSpentSeconds = Math.floor((Date.now() - testStartTime) / 1000);
-  
-  const payload: TestSubmissionRequest = {
-    aim: level,
-    answers: questions.map((q) => ({
-      questionId: q.id,
-      answer: answers[q.id] || null,
-    })),
-    timeSpent: timeSpentSeconds, // ✅ Gửi timeSpent
-  };
-
-  console.log("📤 Submitting payload:", payload);
-  console.log("User:", localStorage.getItem("user"));
-
-  try {
-    setSubmitting(true);
-    const res = await fetchWithAuth(`/tests/${testId}/submit`, {
-  method: "POST",
-  body: JSON.stringify(payload),
-});
-
-    console.log("📊 Response status:", res.status);
-    console.log("📊 Response ok:", res.ok);
-    
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => null);
-      console.error("❌ Error response:", errorData);
-      throw new Error(errorData?.message || `Failed to submit test (${res.status})`);
+  // ✅ Function 1: Check và hiện modal (KHÔNG submit)
+  const handleSubmit = () => {
+    if (isSubmitted || submitting) {
+      console.log("⚠️ Already submitted or submitting");
+      return;
     }
 
-    const jsonData = await res.json();
-    console.log("📥 Feedback received:", jsonData);
+    const answeredCount = Object.keys(answers).length;
+    const unansweredCount = questions.length - answeredCount;
 
-    setFeedback(jsonData.scoreAnalysis);
-    setFeedbackReady(true);
+    console.log("🔍 Submit check:", {
+      unansweredCount,
+      timeLeft,
+      answeredCount,
+      totalQuestions: questions.length,
+    });
 
-  } catch (err) {
-    console.error("❌ Error submitting test:", err);
-    setIsSubmitted(false);
-    setShowLoading(false);
+    // Check điều kiện cần confirm
+    let message = "";
+
+    if (unansweredCount > 5 && timeLeft > 1800) {
+      message = `⚠️ BẠN CÒN:\n\n• ${unansweredCount} câu chưa làm\n• ${Math.floor(
+        timeLeft / 60
+      )} phút thời gian\n\nBạn có chắc chắn muốn nộp bài không?`;
+    } else if (unansweredCount > 5) {
+      message = `⚠️ Bạn còn ${unansweredCount} câu chưa làm!\n\nBạn có chắc chắn muốn nộp bài không?`;
+    } else if (timeLeft > 1800 && unansweredCount > 0) {
+      message = `⏰ Bạn còn ${Math.floor(
+        timeLeft / 60
+      )} phút và ${unansweredCount} câu chưa làm!\n\nBạn có chắc chắn muốn nộp bài không?`;
+    }
+
+    // Nếu cần confirm → hiện modal
+    if (message) {
+      console.log("✅ Showing confirm modal");
+      setConfirmMessage(message);
+      setShowConfirm(true);
+      return;
+    }
+
+    // Không cần confirm → submit luôn
+    console.log("⏭️ No confirmation needed");
+    performSubmit();
+  };
+
+  // ✅ Function 2: Submit thực sự (được gọi từ modal hoặc trực tiếp)
+  const performSubmit = async () => {
+    if (isSubmitted || submitting) {
+      console.log("⚠️ Already submitted or submitting");
+      return;
+    }
+
+    console.log("📤 Performing submit...");
+
+    // Set flags ngay lập tức
+    setSubmitting(true);
+    setIsSubmitted(true);
+    setShowLoading(true);
     setFeedbackReady(false);
-    
-    alert(`Có lỗi xảy ra khi nộp bài:\n${err instanceof Error ? err.message : 'Unknown error'}\n\nVui lòng thử lại!`);
-  } finally {
-    setSubmitting(false);
-  }
-};
+
+    const testStartTime = Date.now() - (60 * 60 - timeLeft) * 1000;
+    const timeSpentSeconds = Math.floor((Date.now() - testStartTime) / 1000);
+
+    const payload: TestSubmissionRequest = {
+      aim: level,
+      answers: questions.map((q) => ({
+        questionId: q.id,
+        answer: answers[q.id] || null,
+      })),
+      timeSpent: timeSpentSeconds,
+    };
+
+    console.log("📤 Submitting payload:", payload);
+
+    try {
+      const res = await fetchWithAuth(`/tests/${testId}/submit`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      console.log("📊 Response status:", res.status);
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        console.error("❌ Error response:", errorData);
+        throw new Error(
+          errorData?.message || `Failed to submit test (${res.status})`
+        );
+      }
+
+      const jsonData = await res.json();
+      console.log("📥 Feedback received:", jsonData);
+
+      setFeedback(jsonData.scoreAnalysis);
+      setFeedbackReady(true);
+    } catch (err) {
+      console.error("❌ Error submitting test:", err);
+      setIsSubmitted(false);
+      setShowLoading(false);
+      setFeedbackReady(false);
+
+      alert(
+        `Có lỗi xảy ra khi nộp bài:\n${
+          err instanceof Error ? err.message : "Unknown error"
+        }\n\nVui lòng thử lại!`
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleLoadingComplete = () => {
-    // Animation hoàn thành, ẩn loading và scroll đến feedback
     setShowLoading(false);
     setTimeout(() => {
       feedbackRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -173,18 +238,15 @@ export default function TestPage({ testId }: { testId: number }) {
 
   return (
     <>
-      {/* Loading Analyze Animation */}
       {showLoading && (
-        <LoadingAnalyze 
-          feedbackReady={feedbackReady} 
-          onComplete={handleLoadingComplete} 
+        <LoadingAnalyze
+          feedbackReady={feedbackReady}
+          onComplete={handleLoadingComplete}
         />
       )}
 
       <div className="flex max-w-6xl mx-auto p-6 space-x-6">
-        {/* Main test content */}
         <div className="flex-1 bg-white rounded-lg shadow p-6">
-          {/* Back button */}
           <button
             onClick={() => router.back()}
             className="mb-4 flex items-center text-indigo-600 hover:text-indigo-800 font-medium"
@@ -227,23 +289,32 @@ export default function TestPage({ testId }: { testId: number }) {
                 <ul className="space-y-2">
                   {q.options.map((opt, i) => {
                     let bgColor = "bg-white";
+                    let borderColor = "";
 
-                    if (submitted && q.answerKey) {
-                      const correctIndex = q.answerKey.charCodeAt(0) - 65;
-                      const correctOption = q.options[correctIndex];
-                      
-                      if (opt === correctOption) {
-                        bgColor = "bg-green-100";
+                    if (submitted && q.correctOption) {
+                      const correctOption = q.correctOption;
+
+                      if (!userAnswer) {
+                        bgColor = "bg-yellow-100";
                       }
-                      else if (opt === userAnswer && userAnswer !== correctOption) {
+
+                      // 2. Đáp án đúng -> xanh
+                      if (opt === correctOption && userAnswer) {
+                        bgColor = "bg-green-100";
+                        borderColor = "border-2 border-green-500";
+                      }
+
+                      // 3. Đáp án sai người dùng chọn -> đỏ
+                      if (opt === userAnswer && userAnswer !== correctOption) {
                         bgColor = "bg-red-100";
+                        borderColor = "border-2 border-red-500";
                       }
                     }
 
                     return (
                       <li key={i}>
                         <label
-                          className={`flex items-center space-x-2 p-2 rounded ${bgColor}`}
+                          className={`flex items-center space-x-2 p-2 rounded ${bgColor} ${borderColor} transition-colors`}
                         >
                           <input
                             type="radio"
@@ -263,7 +334,6 @@ export default function TestPage({ testId }: { testId: number }) {
             );
           })}
 
-          {/* Feedback */}
           {feedback && (
             <div
               ref={feedbackRef}
@@ -279,7 +349,6 @@ export default function TestPage({ testId }: { testId: number }) {
           )}
         </div>
 
-        {/* Sidebar */}
         <TestSidebar
           totalQuestions={questions.length}
           onNavigate={handleNavigate}
@@ -287,8 +356,61 @@ export default function TestPage({ testId }: { testId: number }) {
           onSubmit={handleSubmit}
           isSubmitted={isSubmitted}
           questionIds={questions.map((q) => q.id)}
+          timeLeft={timeLeft}
         />
       </div>
+
+      {/* ✅ Confirmation Modal */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all animate-in fade-in zoom-in duration-200">
+            <div className="flex justify-center pt-8 pb-4">
+              <div className="bg-amber-100 rounded-full p-4">
+                <svg
+                  className="w-12 h-12 text-amber-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div className="px-8 pb-6">
+              <h3 className="text-xl font-bold text-gray-900 text-center mb-4">
+                Xác nhận nộp bài
+              </h3>
+              <p className="text-gray-600 text-center whitespace-pre-line leading-relaxed">
+                {confirmMessage}
+              </p>
+            </div>
+
+            <div className="flex gap-3 px-8 pb-8">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={() => {
+                  setShowConfirm(false);
+                  performSubmit(); // ✅ GỌI performSubmit, KHÔNG gọi handleSubmit
+                }}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-green-400"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
