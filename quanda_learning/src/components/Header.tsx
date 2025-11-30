@@ -12,57 +12,72 @@ interface HeaderProps {
 
 export default function Header({ setActiveSection }: HeaderProps) {
   const router = useRouter();
-  const [open, setOpen] = useState(false); // Mobile menu
+  const [open, setOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [showDropdown, setShowDropdown] = useState(false); // Avatar dropdown
+  const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-
-
- const isTokenExpired = (token: string): boolean => {
-  try {
-    const payloadBase64 = token.split('.')[1]
-    const payload = JSON.parse(atob(payloadBase64))
-    const exp = payload.exp * 1000  // chuyển giây → mili giây
-    return Date.now() > exp
-  } catch (e) {
-    return true // Nếu lỗi -> xem như hết hạn
-  }
-}
-
-  useEffect(() => {
-    const token = localStorage.getItem('token')
-    const storedUser = localStorage.getItem('user')
-
-    if (token && !isTokenExpired(token)) {
-      setUser(JSON.parse(storedUser || 'null'))
-    } else {
-      // Token hết hạn hoặc không tồn tại
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      setUser(null)  // 👉 về trạng thái chưa đăng nhập
+  const isTokenExpired = (token: string): boolean => {
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payload = JSON.parse(atob(payloadBase64));
+      const exp = payload.exp * 1000;
+      return Date.now() > exp;
+    } catch (e) {
+      return true;
     }
-  }, [])
+  };
 
-
-
-  // Lấy user từ localStorage
+  // ✅ GỘP TẤT CẢ LOGIC VÀO 1 useEffect DUY NHẤT
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
-  }, []);
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
 
+    console.log('🔍 Checking auth status:', {
+      hasToken: !!token,
+      hasUser: !!storedUser,
+      isExpired: token ? isTokenExpired(token) : null
+    });
+
+    // ✅ Kiểm tra token trước
+    if (token && !isTokenExpired(token)) {
+      // Token còn hạn → set user
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+        console.log('✅ User authenticated');
+      }
+    } else {
+      // Token hết hạn hoặc không có → xóa hết và về trạng thái chưa đăng nhập
+      console.log('⚠️ Token expired or missing - clearing auth data');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
+    }
+  }, []); // ✅ Chỉ chạy 1 lần khi mount
+
+  // ✅ Lắng nghe event userUpdated (khi update profile)
   useEffect(() => {
     const reloadUser = () => {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) setUser(JSON.parse(storedUser));
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+      
+      // ✅ Vẫn phải check token khi reload
+      if (token && !isTokenExpired(token) && storedUser) {
+        setUser(JSON.parse(storedUser));
+        console.log('🔄 User data reloaded');
+      } else {
+        // Token hết hạn trong lúc đang dùng
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
+        router.push('/authenticate/login');
+      }
     };
 
     window.addEventListener("userUpdated", reloadUser);
     return () => window.removeEventListener("userUpdated", reloadUser);
-  }, []);
-
+  }, [router]);
 
   // Đóng dropdown khi click ra ngoài
   useEffect(() => {
@@ -77,12 +92,14 @@ export default function Header({ setActiveSection }: HeaderProps) {
 
   const handleNavClick = (sectionId: string) => {
     router.push(`/#${sectionId}`);
-    setOpen(false); // Đóng menu mobile khi click
+    setOpen(false);
   };
 
   const handleLogout = () => {
+    console.log('🚪 Logging out...');
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    setUser(null); // ✅ Set null ngay lập tức
     setShowDropdown(false);
     router.push("/authenticate/login");
   };
@@ -118,8 +135,8 @@ export default function Header({ setActiveSection }: HeaderProps) {
           <div className="py-2">
             <button
               onClick={() => {
-                setIsProfileOpen(true); // mở modal
-                setShowDropdown(false); // đóng dropdown
+                setIsProfileOpen(true);
+                setShowDropdown(false);
               }}
               className="w-full text-left px-4 py-3 text-gray-800 font-semibold 
                         hover:bg-indigo-100 hover:text-indigo-700 
@@ -151,21 +168,15 @@ export default function Header({ setActiveSection }: HeaderProps) {
     </nav>
   ) : (
     <nav className="hidden md:flex space-x-20 mt-4 md:mt-0 text-white font-semibold text-lg drop-shadow-md">
-      <button
-        onClick={() => setActiveSection("home")}
-        className="hover:text-yellow-300 transition-colors duration-300"
-      >
+      <button onClick={() => setActiveSection("home")} className="hover:text-yellow-300 transition-colors duration-300">
         Trang chủ
       </button>
       <button onClick={() => setActiveSection("alphabet")} className="hover:text-yellow-300 transition-colors duration-300">
-  Bảng chữ cái
-</button>
-      <button
-    onClick={() => setActiveSection("ipa")} // ✅ Đây là phần mới
-    className="hover:text-yellow-300 transition-colors duration-300"
-  >
-    Bảng phiên âm
-  </button>
+        Bảng chữ cái
+      </button>
+      <button onClick={() => setActiveSection("ipa")} className="hover:text-yellow-300 transition-colors duration-300">
+        Bảng phiên âm
+      </button>
       <button onClick={() => router.push('/notifications')} className="hover:text-yellow-300 transition-colors duration-300">Thông báo</button>
     </nav>
   );
@@ -189,7 +200,6 @@ export default function Header({ setActiveSection }: HeaderProps) {
   return (
     <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between">
-        {/* Logo + Tiêu đề */}
         <div className="flex items-center space-x-4">
           <img
             src="https://logoart.vn/blog/wp-content/uploads/2013/03/thiet-ke-logo-sao-kim-7-1.jpg"
@@ -201,10 +211,8 @@ export default function Header({ setActiveSection }: HeaderProps) {
           </h1>
         </div>
 
-        {/* Desktop Nav */}
         {desktopNav}
 
-        {/* Avatar hoặc nút đăng nhập */}
         {!user ? (
           <button
             onClick={() => router.push("/authenticate/login")}
@@ -216,7 +224,6 @@ export default function Header({ setActiveSection }: HeaderProps) {
           renderAvatar()
         )}
 
-        {/* Nút mở menu mobile */}
         <button
           className="md:hidden absolute top-6 right-6 text-white"
           onClick={() => setOpen(!open)}
@@ -225,19 +232,17 @@ export default function Header({ setActiveSection }: HeaderProps) {
         </button>
       </div>
 
-      {/* Mobile Nav */}
       {open && (
         <nav className="md:hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 border-t border-white/30">
           {mobileNav}
         </nav>
       )}
 
-      {/* Modal render độc lập, không phụ thuộc dropdown */}
       {user && (
         <ProfileModal
           isOpen={isProfileOpen}
           onClose={() => setIsProfileOpen(false)}
-          userId={user.id}  // ✅ Truyền userId vào đây
+          userId={user.id}
         />
       )}
     </header>
