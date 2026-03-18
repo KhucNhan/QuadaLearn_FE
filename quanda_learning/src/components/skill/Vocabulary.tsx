@@ -236,7 +236,7 @@ const handleSearch = (value: string) => {
       </div>
 
       {/* Form */}
-      {formVisible && (
+     {formVisible && (
         <div
           ref={formRef}
           className="w-full max-w-5xl bg-white p-4 mb-6 rounded shadow"
@@ -246,19 +246,36 @@ const handleSearch = (value: string) => {
           </h4>
 
           <div className="grid grid-cols-2 gap-3">
-            {["word", "transcription", "meaning", "exampleSentence", "imageUrl", "level", "topic"].map(
+            {["word", "transcription", "meaning", "exampleSentence", "imageUrl", "topic"].map(
               (field) => (
                 <input
+
                   key={field}
-                  placeholder={field}
+                  placeholder={`${field} *`}
                   value={formData[field as keyof VocabularyItem] || ""}
                   onChange={(e) =>
                     setFormData({ ...formData, [field]: e.target.value })
                   }
-                  className="border p-2 rounded"
+                  className="border p-2 rounded placeholder:text-gray-400"
                 />
               )
             )}
+
+            {/* Select Level */}
+            <select
+              value={formData.level || ""}
+              onChange={(e) => setFormData({ ...formData, level: e.target.value })}
+              className="border p-2 rounded text-gray-700"
+            >
+              <option value="" disabled>
+                Level *
+              </option>
+              <option value="Beginner">Beginner</option>
+              <option value="Elementary">Elementary</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Upper-Intermediate">Upper-Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
           </div>
 
           <div className="flex justify-end gap-2 mt-4">

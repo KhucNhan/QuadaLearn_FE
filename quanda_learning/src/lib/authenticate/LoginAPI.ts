@@ -1,12 +1,13 @@
   // src/lib/api.ts
-  export interface LoginResponse {
-    needsCompletion: boolean;
-    id: number;
-    token: string;
-    name: string;
-    avatar?: string; // ✅ thêm dòng này để có thể lấy avatar
-    authorities: { authority: string }[];
-  }
+export interface LoginResponse {
+  id: number
+  name: string
+  token: string
+  authorities?: { authority: string }[]
+  avatar?: string
+  needsCompletion?: boolean
+  status: "ACTIVE" | "BANNED"  // hoặc string nếu bạn muốn linh hoạt
+}
 
 
   export async function login(email: string, password: string): Promise<LoginResponse> {

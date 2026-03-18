@@ -20,10 +20,10 @@ export default function LoginForm() {
     try {
       const data = await login(email, password)
 
-      // 👉 Lưu token (tuỳ bạn có dùng hay không)
+      // 👉 Lưu token
       localStorage.setItem("token", data.token)
 
-      // 👉 Lưu thông tin người dùng vào localStorage để Header hiển thị avatar
+      // 👉 Lưu thông tin người dùng
       localStorage.setItem(
         "user",
         JSON.stringify({
@@ -33,12 +33,19 @@ export default function LoginForm() {
           token: data.token,
           role: data.authorities?.[0]?.authority || "USER",
           avatar: data.avatar || "/images/default-avatar.png",
+          status: data.status, // thêm status
         }),
       )
 
-      window.dispatchEvent(new Event("userUpdated"));
-      
-      // 👉 Nếu cần hoàn thiện hồ sơ thì ưu tiên chuyển tới complete-profile
+      window.dispatchEvent(new Event("userUpdated"))
+
+      // 👉 Kiểm tra status
+      if (data.status !== "ACTIVE") {
+        setError("Tài khoản chưa được kích hoạt hoặc đang bị khóa")
+        return
+      }
+
+      // 👉 Nếu cần hoàn thiện hồ sơ
       if (data.needsCompletion) {
         router.push("/authenticate/complete-profile")
         return
@@ -59,6 +66,7 @@ export default function LoginForm() {
       console.error(err)
     }
   }
+
 
   const handleGoogleSignup = async () => {
     try {

@@ -381,13 +381,9 @@ export function ProfileModal({ isOpen, onClose, userId }: ProfileModalProps) {
               <div className="space-y-4 mb-6">
                 <div>
                   <Label className="text-purple-200 text-sm mb-2 block">Email</Label>
-                  <Input
-                    value={editInfo.email}
-                    onChange={(e) => setEditInfo({ ...editInfo, email: e.target.value })}
-                    className="bg-slate-800/50 border-purple-500/50 text-white"
-                    placeholder="email@example.com"
-                    type="email"
-                  />
+                  <div className="bg-slate-800/50 border border-purple-500/50 text-white p-2 rounded-md h-10 flex items-center">
+                    <span className="text-sm opacity-70">{editInfo.email}</span>
+                  </div>
                 </div>
 
                 <div>
