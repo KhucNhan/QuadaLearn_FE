@@ -325,6 +325,7 @@ const handleSearch = (value: string) => {
             className="px-3 py-1 rounded bg-gray-200 disabled:bg-gray-300"
           >
             Trang sau ▶
+
           </button>
         </div>
       )}
